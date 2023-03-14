@@ -1,0 +1,5 @@
+Debug/
+.vs/
+x64/
+# 方便用 Visual Studio 的选手一键编译
+!*.sln

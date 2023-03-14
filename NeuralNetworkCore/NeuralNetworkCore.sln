@@ -1,0 +1,44 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32526.322
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NeuralNetworkCore", "NeuralNetworkCore\NeuralNetworkCore.vcxproj", "{1C653F6B-9136-4E2C-9CD1-F9C3D14BE2DB}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NeuralNetworkCLI", "NeuralNetworkCLI\NeuralNetworkCLI.vcxproj", "{7793E2E7-0445-4ACF-8CC6-FCB3BB3E2B25}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1C653F6B-9136-4E2C-9CD1-F9C3D14BE2DB} = {1C653F6B-9136-4E2C-9CD1-F9C3D14BE2DB}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1C653F6B-9136-4E2C-9CD1-F9C3D14BE2DB}.Debug|x64.ActiveCfg = Debug|x64
+		{1C653F6B-9136-4E2C-9CD1-F9C3D14BE2DB}.Debug|x64.Build.0 = Debug|x64
+		{1C653F6B-9136-4E2C-9CD1-F9C3D14BE2DB}.Debug|x86.ActiveCfg = Debug|Win32
+		{1C653F6B-9136-4E2C-9CD1-F9C3D14BE2DB}.Debug|x86.Build.0 = Debug|Win32
+		{1C653F6B-9136-4E2C-9CD1-F9C3D14BE2DB}.Release|x64.ActiveCfg = Release|x64
+		{1C653F6B-9136-4E2C-9CD1-F9C3D14BE2DB}.Release|x64.Build.0 = Release|x64
+		{1C653F6B-9136-4E2C-9CD1-F9C3D14BE2DB}.Release|x86.ActiveCfg = Release|Win32
+		{1C653F6B-9136-4E2C-9CD1-F9C3D14BE2DB}.Release|x86.Build.0 = Release|Win32
+		{7793E2E7-0445-4ACF-8CC6-FCB3BB3E2B25}.Debug|x64.ActiveCfg = Debug|x64
+		{7793E2E7-0445-4ACF-8CC6-FCB3BB3E2B25}.Debug|x64.Build.0 = Debug|x64
+		{7793E2E7-0445-4ACF-8CC6-FCB3BB3E2B25}.Debug|x86.ActiveCfg = Debug|Win32
+		{7793E2E7-0445-4ACF-8CC6-FCB3BB3E2B25}.Debug|x86.Build.0 = Debug|Win32
+		{7793E2E7-0445-4ACF-8CC6-FCB3BB3E2B25}.Release|x64.ActiveCfg = Release|x64
+		{7793E2E7-0445-4ACF-8CC6-FCB3BB3E2B25}.Release|x64.Build.0 = Release|x64
+		{7793E2E7-0445-4ACF-8CC6-FCB3BB3E2B25}.Release|x86.ActiveCfg = Release|Win32
+		{7793E2E7-0445-4ACF-8CC6-FCB3BB3E2B25}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {38C35A11-DBF6-44A1-8F02-6D9EEDC6EE9D}
+	EndGlobalSection
+EndGlobal
