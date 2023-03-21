@@ -1,6 +1,6 @@
 #pragma once
 #include "pch.h"
-// ºöÂÔ: warning C4091: ¡°typedef ¡±: Ã»ÓĞÉùÃ÷±äÁ¿Ê±ºöÂÔ¡°mat_base¡±µÄ×ó²à
+// å¿½ç•¥: warning C4091: â€œtypedef â€: æ²¡æœ‰å£°æ˜å˜é‡æ—¶å¿½ç•¥â€œmat_baseâ€çš„å·¦ä¾§
 #pragma warning(push)
 #pragma warning(disable: 4091)
 
@@ -29,17 +29,42 @@ typedef struct mat_double
 #pragma pack(pop)
 
 #pragma warning(pop)
-
 /// <summary>
-/// ¾ØÕó³Ë·¨, µ÷ÓÃ opencv µÄ¹ãÒå¾ØÕó³Ë·¨(gemm)º¯Êı
-/// ²ÎÊıÃèÊö¼û https://docs.opencv.org/4.7.0/d2/dab/group__core__hal__interface__matrix__multiplication.html
-/// µ«Ê¹ÓÃµÄÊÇ https://docs.opencv.org/4.7.0/d3/ddd/group__core__hal__functions.html#ga8894272aecb229343b39d377b908fd1f
-/// ÔİÊ±²»ÖªµÀÓĞÊ²Ã´Çø±ğ
+/// çŸ©é˜µä¹˜æ³•, è°ƒç”¨ opencv çš„å¹¿ä¹‰çŸ©é˜µä¹˜æ³•(gemm)å‡½æ•°
+/// å‚æ•°æè¿°è§ https://docs.opencv.org/4.7.0/d2/dab/group__core__hal__interface__matrix__multiplication.html
+/// ä½†ä½¿ç”¨çš„æ˜¯ https://docs.opencv.org/4.7.0/d3/ddd/group__core__hal__functions.html#ga8894272aecb229343b39d377b908fd1f
+/// æš‚æ—¶ä¸çŸ¥é“æœ‰ä»€ä¹ˆåŒºåˆ«
 /// </summary>
 /// <param name="a"></param>
 /// <param name="b"></param>
 /// <param name="dst"></param>
 /// <returns></returns>
 void API_DEF multiply(const mat_float& a, const mat_float& b, const mat_float& dst);
+/// <summary>
+/// çŸ©é˜µä¹˜æ³•, è°ƒç”¨ opencv çš„å¹¿ä¹‰çŸ©é˜µä¹˜æ³•(gemm)å‡½æ•°, ä¸ multiply ç›¸æ¯”å¤šä¸€ä¸ªå‚æ•°, ç”¨äºæ§åˆ¶è¾“å…¥æ˜¯å¦è½¬ç½®
+/// å‚æ•°æè¿°è§ https://docs.opencv.org/4.7.0/d2/dab/group__core__hal__interface__matrix__multiplication.html
+/// ä½†ä½¿ç”¨çš„æ˜¯ https://docs.opencv.org/4.7.0/d3/ddd/group__core__hal__functions.html#ga8894272aecb229343b39d377b908fd1f
+/// æš‚æ—¶ä¸çŸ¥é“æœ‰ä»€ä¹ˆåŒºåˆ«
+/// </summary>
+/// <param name="a"></param>
+/// <param name="b"></param>
+/// <param name="dst"></param>
+/// <returns></returns>
+void API_DEF multiply_flag(const mat_float& a, const mat_float& b, const mat_float& dst, int flag = 0);
 
 void API_DEF print(const mat_float& mat, int number_width = 4);
+
+void API_DEF pooling_max(const mat_float& src, const mat_float& dst, int size);
+
+void API_DEF pooling_min(const mat_float& src, const mat_float& dst, int size);
+
+void API_DEF pooling_mean(const mat_float& src, const mat_float& dst, int size);
+
+enum POOLING_TYPE
+{
+    CORE_POOLING_MAX = 1,
+    CORE_POOLING_MIN = 2,
+    CORE_POOLING_MEAN = 3
+};
+
+void API_DEF pooling(const mat_float& src, const mat_float& dst, int size, POOLING_TYPE pooling_type);
