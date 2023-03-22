@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "matrix.h"
 #include <opencv2/core/hal/hal.hpp>
+#include <opencv2/imgproc/hal/hal.hpp>
 #include <stdlib.h>
 #include <iostream>
 #include <deque>
@@ -39,6 +40,22 @@ mat_float create_mat_float(int width, int height)
     mat_float res{ width, height };
     res.ptr = (float*)malloc(sizeof(float) * width * height);
     return res;
+}
+
+void add(const mat_float& a, const mat_float& b, const mat_float& dst)
+{
+    cv::hal::add32f
+    (
+        a.ptr,
+        a.width * sizeof(float),
+        b.ptr,
+        b.width * sizeof(float),
+        dst.ptr,
+        dst.width * sizeof(float),
+        a.width,
+        a.height,
+        0   /* 最后一个void*参数完全猜不出是干什么的, 反正填个NULL能运行...就先不管了 */
+    );
 }
 
 void multiply(const mat_float& a, const mat_float& b, const mat_float& dst)
@@ -257,6 +274,64 @@ void pooling_mean(const mat_float& src, const mat_float& dst, int size)
             }
         }
     }
+}
+
+void convolution(const mat_float& src, const mat_float& dst, const mat_float& kernel)
+{
+    cv::hal::filter2D
+    (
+        CV_32FC1,
+        CV_32FC1,
+        CV_32FC1,
+        (uchar*)src.ptr,
+        src.width * sizeof(float),
+        (uchar*)dst.ptr,
+        dst.width * sizeof(float),
+        src.width,
+        src.height,
+        dst.width,
+        dst.height,
+        0,
+        0,
+        (uchar*)kernel.ptr,
+        kernel.width * sizeof(float),
+        kernel.width,
+        kernel.height,
+        -1,
+        -1,
+        0,
+        CV_HAL_BORDER_REPLICATE,
+        false
+    );
+}
+
+void API_DEF convolution_flag(const mat_float& src, const mat_float& dst, const mat_float& kernel, int border_type)
+{
+    cv::hal::filter2D
+    (
+        CV_32FC1,
+        CV_32FC1,
+        CV_32FC1,
+        (uchar*)src.ptr,
+        src.width * sizeof(float),
+        (uchar*)dst.ptr,
+        dst.width * sizeof(float),
+        src.width,
+        src.height,
+        dst.width,
+        dst.height,
+        0,
+        0,
+        (uchar*)kernel.ptr,
+        kernel.width * sizeof(float),
+        kernel.width,
+        kernel.height,
+        -1,
+        -1,
+        0,
+        border_type,
+        false
+    );
 }
 
 void pooling(const mat_float& src, const mat_float& dst, int size, POOLING_TYPE pooling_type)

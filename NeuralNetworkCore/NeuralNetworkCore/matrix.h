@@ -29,6 +29,9 @@ typedef struct mat_double
 #pragma pack(pop)
 
 #pragma warning(pop)
+
+void API_DEF add(const mat_float& a, const mat_float& b, const mat_float& dst);
+
 /// <summary>
 /// 矩阵乘法, 调用 opencv 的广义矩阵乘法(gemm)函数
 /// 参数描述见 https://docs.opencv.org/4.7.0/d2/dab/group__core__hal__interface__matrix__multiplication.html
@@ -59,6 +62,10 @@ void API_DEF pooling_max(const mat_float& src, const mat_float& dst, int size);
 void API_DEF pooling_min(const mat_float& src, const mat_float& dst, int size);
 
 void API_DEF pooling_mean(const mat_float& src, const mat_float& dst, int size);
+
+void API_DEF convolution(const mat_float& src, const mat_float& dst, const mat_float& kernel);
+
+void API_DEF convolution_flag(const mat_float& src, const mat_float& dst, const mat_float& kernel, int border_type);
 
 enum POOLING_TYPE
 {
