@@ -4,6 +4,10 @@
 #include "matrix.h"
 #include "NeuralNetworkCLI.h"
 
+using std::chrono::high_resolution_clock;
+using std::chrono::duration_cast;
+using std::chrono::milliseconds;
+
 void naive_multiply(const mat_float& a, const mat_float& b, mat_float dst)
 {
     for (size_t row = 0; row < dst.height; row++)
@@ -22,10 +26,6 @@ void naive_multiply(const mat_float& a, const mat_float& b, mat_float dst)
         }
     }
 }
-
-using std::chrono::high_resolution_clock;
-using std::chrono::duration_cast;
-using std::chrono::milliseconds;
 
 void test_multiply()
 {
@@ -113,12 +113,13 @@ void test_pooling()
         1,2,3,4,
     };
     mat_float mat1 = { 4,16, raw_mat1 };
-    int kernel_size = 3;
-    mat_float pooling_output{ mat1.width - kernel_size + 1, mat1.height - kernel_size + 1 };
+    int kernel_size = 2;
+    mat_float pooling_output{ mat1.width / kernel_size, mat1.height / kernel_size };
     pooling_output.ptr = (float*)malloc(sizeof(float) * pooling_output.width * pooling_output.height);
 
     std::cout << "------------------Pooling Test--------------------" << std::endl;
-
+    std::cout << "input matrix:" << std::endl;
+    print(mat1);
     pooling_max(mat1, pooling_output, kernel_size);
     std::cout << "------------------Max Pooling--------------------" << std::endl;
     print(pooling_output);
@@ -126,10 +127,11 @@ void test_pooling()
     pooling_min(mat1, pooling_output, kernel_size);
     std::cout << "------------------Min Pooling--------------------" << std::endl;
     print(pooling_output);
-
+    
     pooling_mean(mat1, pooling_output, kernel_size);
     std::cout << "------------------Mean Pooling--------------------" << std::endl;
     print(pooling_output, 8);
+    
     free(pooling_output.ptr);
 }
 
@@ -193,20 +195,21 @@ void test_addition()
     };
     float dst_raw[25];
 
-    mat_float a{5,5,mat1_raw};
-    mat_float b{5,5,mat2_raw};
-    mat_float dst{5,5,dst_raw};
-    add(a,b,dst);
+    mat_float a{ 5,5,mat1_raw };
+    mat_float b{ 5,5,mat2_raw };
+    mat_float dst{ 5,5,dst_raw };
+    add(a, b, dst);
     print(dst);
+    add_scalar(a, 0.01f, a);
 }
 
 int main()
 {
     // test_multiply();
 
-    // test_pooling();
+    test_pooling();
 
     // test_convolution();
 
-    test_addition();
+    // test_addition();
 }

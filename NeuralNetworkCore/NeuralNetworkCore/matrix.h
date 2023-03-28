@@ -31,6 +31,7 @@ typedef struct mat_double
 #pragma warning(pop)
 
 void API_DEF add(const mat_float& a, const mat_float& b, const mat_float& dst);
+void API_DEF add_scalar(const mat_float& a, float scalar, const mat_float& dst);
 
 /// <summary>
 /// 矩阵乘法, 调用 opencv 的广义矩阵乘法(gemm)函数

@@ -171,6 +171,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="lenet_5.h" />
     <ClInclude Include="matrix.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="test.h" />
