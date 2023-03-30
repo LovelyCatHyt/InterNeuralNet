@@ -127,11 +127,11 @@ void test_pooling()
     pooling_min(mat1, pooling_output, kernel_size);
     std::cout << "------------------Min Pooling--------------------" << std::endl;
     print(pooling_output);
-    
+
     pooling_mean(mat1, pooling_output, kernel_size);
     std::cout << "------------------Mean Pooling--------------------" << std::endl;
     print(pooling_output, 8);
-    
+
     free(pooling_output.ptr);
 }
 
@@ -146,17 +146,18 @@ void test_convolution()
            1,1,1,1,1,
     };
 
-    float dst_raw[25] = { -1 };
-
+    float dst_raw[9] = { 0 };
+    float dst2_raw[25] = { 0 };
     float kernel_raw[] =
     {
-        1,1,1,
-        1,1,1,
-        1,1,1,
+        0,0,0,
+        0,2,0,
+        0,0,0,
     };
 
     mat_float src{ 5,5,mat1_raw };
-    mat_float dst{ 5,5,dst_raw };
+    mat_float dst{ 3,3,dst_raw };
+    mat_float dst2{ 5,5,dst2_raw };
     mat_float kernel{ 3,3,kernel_raw };
     std::cout << "------------------Convolution--------------------\n";
     std::cout << "src:\n";
@@ -165,14 +166,17 @@ void test_convolution()
     print(kernel);
     try
     {
-        convolution_flag(src, dst, kernel, CV_HAL_BORDER_REFLECT);
+        convolution_flag(src, dst, kernel, 0, CV_HAL_BORDER_CONSTANT);
+        convolution_flag(src, dst2, kernel, 1, CV_HAL_BORDER_CONSTANT);
     }
     catch (const std::exception& e)
     {
         std::cout << "error occorred:\n" << e.what() << std::endl;
     }
-    std::cout << "concolution result:\n";
+    std::cout << "concolution(pad=0) result:\n";
     print(dst);
+    std::cout << "concolution(pad=1) result:\n";
+    print(dst2);
 }
 
 void test_addition()
@@ -207,9 +211,9 @@ int main()
 {
     // test_multiply();
 
-    test_pooling();
+    // test_pooling();
 
-    // test_convolution();
+    test_convolution();
 
     // test_addition();
 }

@@ -8,23 +8,23 @@
 #pragma pack(8)
 typedef struct mat_base
 {
-	int width;
-	int height;
-	void* ptr;
+    int width;
+    int height;
+    void* ptr;
 };
 
 typedef struct mat_float
 {
-	int width;
-	int height;
-	float* ptr;
+    int width;
+    int height;
+    float* ptr;
 };
 
 typedef struct mat_double
 {
-	int width;
-	int height;
-	double* ptr;
+    int width;
+    int height;
+    double* ptr;
 };
 #pragma pack(pop)
 
@@ -64,9 +64,11 @@ void API_DEF pooling_min(const mat_float& src, const mat_float& dst, int size);
 
 void API_DEF pooling_mean(const mat_float& src, const mat_float& dst, int size);
 
-void API_DEF convolution(const mat_float& src, const mat_float& dst, const mat_float& kernel);
+// 卷积, 但只保证奇数核, 且 padding = size/2 或 0 的两种情况
+void API_DEF convolution(const mat_float& src, const mat_float& dst, const mat_float& kernel, int padding = 0);
 
-void API_DEF convolution_flag(const mat_float& src, const mat_float& dst, const mat_float& kernel, int border_type);
+// 卷积, 但只保证奇数核, 且 padding = size/2 或 0 的两种情况
+void API_DEF convolution_flag(const mat_float& src, const mat_float& dst, const mat_float& kernel, int padding = 0, int border_type = CV_HAL_BORDER_REPLICATE);
 
 enum POOLING_TYPE
 {

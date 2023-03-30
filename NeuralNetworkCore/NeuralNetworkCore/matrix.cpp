@@ -248,62 +248,82 @@ void pooling_mean(const mat_float& src, const mat_float& dst, int size)
     }
 }
 
-void convolution(const mat_float& src, const mat_float& dst, const mat_float& kernel)
+void convolution(const mat_float& src, const mat_float& dst, const mat_float& kernel, int padding)
 {
-    cv::hal::filter2D
-    (
-        CV_32FC1,
-        CV_32FC1,
-        CV_32FC1,
-        (uchar*)src.ptr,
-        src.width * sizeof(float),
-        (uchar*)dst.ptr,
-        dst.width * sizeof(float),
-        src.width,
-        src.height,
-        dst.width,
-        dst.height,
-        0,
-        0,
-        (uchar*)kernel.ptr,
-        kernel.width * sizeof(float),
-        kernel.width,
-        kernel.height,
-        -1,
-        -1,
-        0,
-        CV_HAL_BORDER_REPLICATE,
-        false
-    );
+    convolution_flag(src, dst, kernel, padding, CV_HAL_BORDER_REPLICATE);
 }
 
-void convolution_flag(const mat_float& src, const mat_float& dst, const mat_float& kernel, int border_type)
+void convolution_flag(const mat_float& src, const mat_float& dst, const mat_float& kernel, int padding, int border_type)
 {
-    cv::hal::filter2D
-    (
-        CV_32FC1,
-        CV_32FC1,
-        CV_32FC1,
-        (uchar*)src.ptr,
-        src.width * sizeof(float),
-        (uchar*)dst.ptr,
-        dst.width * sizeof(float),
-        src.width,
-        src.height,
-        dst.width,
-        dst.height,
-        0,
-        0,
-        (uchar*)kernel.ptr,
-        kernel.width * sizeof(float),
-        kernel.width,
-        kernel.height,
-        -1,
-        -1,
-        0,
-        border_type,
-        false
-    );
+    if (padding == kernel.width / 2)
+    {
+        cv::hal::filter2D
+        (
+            CV_32FC1,
+            CV_32FC1,
+            CV_32FC1,
+            (uchar*)src.ptr,
+            src.width * sizeof(float),
+            (uchar*)dst.ptr,
+            dst.width * sizeof(float),
+            src.width,
+            src.height,
+            src.width,
+            src.height,
+            0,
+            0,
+            (uchar*)kernel.ptr,
+            kernel.width * sizeof(float),
+            kernel.width,
+            kernel.height,
+            -1,
+            -1,
+            0,
+            border_type,
+            false
+        );
+    }
+    else
+    {
+        auto temp = create_mat_float(src.width, src.height);
+        cv::hal::filter2D
+        (
+            CV_32FC1,
+            CV_32FC1,
+            CV_32FC1,
+            (uchar*)src.ptr,
+            src.width * sizeof(float),
+            (uchar*)temp.ptr,
+            temp.width * sizeof(float),
+            src.width,
+            src.height,
+            src.width,
+            src.height,
+            0,
+            0,
+            (uchar*)kernel.ptr,
+            kernel.width * sizeof(float),
+            kernel.width,
+            kernel.height,
+            -1,
+            -1,
+            0,
+            border_type,
+            false
+        );
+
+        // 裁剪一个区域复制到 dst 上
+        uchar* temp_ptr = (uchar*)(temp.ptr + ((temp.width + 1) * kernel.width / 2));
+        uchar* dst_ptr = (uchar*)dst.ptr;
+        for (size_t i = 0; i < dst.height; i++)
+        {
+            memcpy(dst_ptr, temp_ptr, dst.width * sizeof(float));
+            temp_ptr += temp.width * sizeof(float);
+            dst_ptr += dst.width * sizeof(float);
+        }
+
+        free(temp.ptr);
+    }
 }
 
 void pooling(const mat_float& src, const mat_float& dst, int size, POOLING_TYPE pooling_type)
