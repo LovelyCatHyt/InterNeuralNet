@@ -33,6 +33,10 @@ typedef struct mat_double
 void API_DEF add(const mat_float& a, const mat_float& b, const mat_float& dst);
 void API_DEF add_scalar(const mat_float& a, float scalar, const mat_float& dst);
 
+void API_DEF fill(const mat_float& mat, float value);
+
+void API_DEF copy(const mat_float& src, const mat_float& dst);
+
 /// <summary>
 /// 矩阵乘法, 调用 opencv 的广义矩阵乘法(gemm)函数
 /// 参数描述见 https://docs.opencv.org/4.7.0/d2/dab/group__core__hal__interface__matrix__multiplication.html
@@ -69,6 +73,20 @@ void API_DEF convolution(const mat_float& src, const mat_float& dst, const mat_f
 
 // 卷积, 但只保证奇数核, 且 padding = size/2 或 0 的两种情况
 void API_DEF convolution_flag(const mat_float& src, const mat_float& dst, const mat_float& kernel, int padding = 0, int border_type = CV_HAL_BORDER_REPLICATE);
+
+void API_DEF relu(const mat_float& src, const mat_float& dst);
+
+void API_DEF conv_layer(const mat_float& in, const mat_float& kernel, float bias, const mat_float& out, int padding);
+
+/// <summary>
+/// 含偏置量的全连接层
+/// </summary>
+/// <param name="in">输入: mx1矩阵</param>
+/// <param name="weght">权重: nxm矩阵</param>
+/// <param name="bias">偏置: nx1矩阵</param>
+/// <param name="out">输出: nx1矩阵</param>
+/// <returns></returns>
+void API_DEF full_connect_layer(const mat_float& in, const mat_float& weght, const mat_float& bias, const mat_float& out);
 
 enum POOLING_TYPE
 {

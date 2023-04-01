@@ -69,6 +69,24 @@ void add_scalar(const mat_float& a, float scalar, const mat_float& dst)
     }
 }
 
+void fill(const mat_float& mat, float value)
+{
+    auto len = mat.width * mat.height;
+    for (size_t i = 0; i < len; i++)
+    {
+        mat.ptr[i] = value;
+    }
+}
+
+void copy(const mat_float& src, const mat_float& dst)
+{
+    auto len = src.height * src.width;
+    for (size_t i = 0; i < len; i++)
+    {
+        dst.ptr[i] = src.ptr[i];
+    }
+}
+
 void multiply(const mat_float& a, const mat_float& b, const mat_float& dst)
 {
     cv::hal::gemm32f
@@ -324,6 +342,28 @@ void convolution_flag(const mat_float& src, const mat_float& dst, const mat_floa
 
         free(temp.ptr);
     }
+}
+
+void relu(const mat_float& src, const mat_float& dst)
+{
+    auto len = dst.width * dst.height;
+    for (size_t i = 0; i < len; i++)
+    {
+        dst.ptr[i] = src.ptr[i] > 0 ? src.ptr[i] : 0;
+    }
+}
+
+void conv_layer(const mat_float& in, const mat_float& kernel, float bias, const mat_float& out, int padding)
+{
+    convolution(in, out, kernel, padding);
+    add_scalar(out, bias, out);
+}
+
+void full_connect_layer(const mat_float& in, const mat_float& weght, const mat_float& bias, const mat_float& out)
+{
+    multiply(weght, in, out);
+    add(out, bias, out);
+    relu(out, out);
 }
 
 void pooling(const mat_float& src, const mat_float& dst, int size, POOLING_TYPE pooling_type)
