@@ -211,14 +211,18 @@ void test_addition()
 void test_lenet_5()
 {
     lenet net;
-    net.read_from_file("../lenet-5.float32");
     std::cout << "------------------Lenet 5 Evaluation--------------------\n";
+    std::cout << "loading model...\n";
+    net.read_from_file("../lenet-5.float32");
+    std::cout << "model loaded.\n";
+    /*
     std::cout << "lenet.c1[0] = \n";
     print(net.c1.get()[0], 10);
     std::cout << "lenet.f2_bias has: \n";
     print({ 5, 1, net.f2_bias.ptr }, 10);
     std::cout << "lenet.f3_bias has: \n";
     print({ 5, 1, net.f3_bias.ptr }, 10);
+
     float img_raw[] = {
         0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
         0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -251,6 +255,11 @@ void test_lenet_5()
     };
     mat_float img{ 28,28,img_raw };
     std::cout << "result = " << net(img);
+    */
+    auto start = high_resolution_clock::now();
+    net.test("../t10k-images.idx3-ubyte", "../t10k-labels.idx1-ubyte", 10000);
+    auto count = duration_cast<milliseconds>(high_resolution_clock::now() - start).count();
+    std::cout << "total used time: " << count << "ms, or " << count / 10.0f << "us per evaluation.\n";
 }
 
 int main()

@@ -37,6 +37,7 @@ public:
     int operator()(const mat_float& img);
     // 这个函数仅仅是纯粹的 eval, 分配的内存空间会在函数返回前释放
     int eval(const mat_float& img);
+    void test(const char* test_file, const char* label_file, int max_test_count = 1000);
     std::unique_ptr<mat_float[]> c1;
     mat_float c1_bias;
     std::unique_ptr<mat_float[]> c2;

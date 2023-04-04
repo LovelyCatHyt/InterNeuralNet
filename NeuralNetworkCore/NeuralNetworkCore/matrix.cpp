@@ -129,6 +129,15 @@ void multiply_flag(const mat_float& a, const mat_float& b, const mat_float& dst,
     );
 }
 
+void multiply_scalar(const mat_float& a, float scalar, const mat_float& dst)
+{
+    auto len = a.width * a.height;
+    for (size_t i = 0; i < len; i++)
+    {
+        dst.ptr[i] = a.ptr[i] * scalar;
+    }
+}
+
 void print(const mat_float& mat, int number_width)
 {
     auto ptr = mat.ptr;

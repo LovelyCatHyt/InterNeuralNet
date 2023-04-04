@@ -60,6 +60,8 @@ void API_DEF multiply(const mat_float& a, const mat_float& b, const mat_float& d
 /// <returns></returns>
 void API_DEF multiply_flag(const mat_float& a, const mat_float& b, const mat_float& dst, int flag = 0);
 
+void API_DEF multiply_scalar(const mat_float& a, float scalar, const mat_float& dst);
+
 void API_DEF print(const mat_float& mat, int number_width = 4);
 
 void API_DEF pooling_max(const mat_float& src, const mat_float& dst, int size);
