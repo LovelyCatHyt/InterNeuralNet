@@ -150,8 +150,8 @@ void test_convolution()
     float dst2_raw[25] = { 0 };
     float kernel_raw[] =
     {
+        1,0,0,
         0,0,0,
-        0,2,0,
         0,0,0,
     };
 

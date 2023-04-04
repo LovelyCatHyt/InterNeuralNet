@@ -141,29 +141,29 @@ int lenet::eval(const mat_float& img)
     m1 = { 28, 28 * 6, cache1 };
     m2 = { 14, 14 * 6, cache2 };
     pooling_max(m1, m2, 2);
-    print_arr(cache2, 10);
+    print_arr(cache2 + 20, 10);
 
     bind_mat_arr(arr1, 10, 10, 16, cache1);
     bind_mat_arr(arr2, 14, 14, 6, cache2);
     // conv2
     batch_conv_layer(arr2, c2.get(), c2_bias, 6, 16, arr1, 0);
-    // print_arr(cache1, 10);
+    print_arr(cache1 + 1590, 10);
 
     m1 = { 10, 10 * 16, cache1 };
     m2 = { 5, 5 * 16, cache2 };
     pooling_max(m1, m2, 2);
-    print_arr(cache2, 10);
+    print_arr(cache2 + 20, 10);
 
     m1 = { 1, 120, cache1 };
     m2 = { 1, 16 * 5 * 5, cache2 };
     // fc1
     full_connect_layer(m2, f1, f1_bias, m1);
-    print_arr(cache1, 10);
+    print_arr(cache1 + 20, 10);
 
     m2 = { 1, 84, cache2 };
     // fc2
     full_connect_layer(m1, f2, f2_bias, m2);
-    print_arr(cache2, 10);
+    print_arr(cache2, 84);
 
     m1 = { 1, 10, cache1 };
     // fc3

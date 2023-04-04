@@ -331,7 +331,7 @@ void convolution_flag(const mat_float& src, const mat_float& dst, const mat_floa
         );
 
         // 裁剪一个区域复制到 dst 上
-        uchar* temp_ptr = (uchar*)(temp.ptr + ((temp.width + 1) * kernel.width / 2));
+        uchar* temp_ptr = (uchar*)(temp.ptr + ((temp.width + 1) * (kernel.width / 2)));
         uchar* dst_ptr = (uchar*)dst.ptr;
         for (size_t i = 0; i < dst.height; i++)
         {
