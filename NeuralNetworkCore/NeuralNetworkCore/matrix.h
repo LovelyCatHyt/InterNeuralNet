@@ -80,6 +80,9 @@ void API_DEF relu(const mat_float& src, const mat_float& dst);
 
 void API_DEF conv_layer(const mat_float& in, const mat_float& kernel, float bias, const mat_float& out, int padding);
 
+// 批量处理多输入多输出的卷积层
+void API_DEF batch_conv_layer(const mat_float* img_arr, const mat_float* kernel_arr, const mat_float& bias, int in, int out, const mat_float* dst_array, int padding);
+
 /// <summary>
 /// 含偏置量的全连接层
 /// </summary>

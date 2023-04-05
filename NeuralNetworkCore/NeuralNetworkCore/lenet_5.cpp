@@ -299,23 +299,3 @@ void lenet::test(const char* test_file, const char* label_file, int max_test_cou
 
     printf("test result: acc = %f%%\n", correct * 100.0f / test_count);
 }
-
-void lenet::batch_conv_layer(const mat_float* img_arr, const mat_float* kernel_arr, const mat_float& bias, int in, int out, const mat_float* dst_array, int padding)
-{
-    size_t kernel_id = 0;
-    mat_float temp_mat{ dst_array[0].width, dst_array[0].height };
-    allocate(temp_mat);
-    for (size_t i_out = 0; i_out < out; i_out++)
-    {
-        auto out_mat = dst_array[i_out];
-        fill(temp_mat, bias.ptr[i_out]);
-        for (size_t i_in = 0; i_in < in; i_in++)
-        {
-            convolution(img_arr[i_in], out_mat, kernel_arr[kernel_id], padding);
-            add(out_mat, temp_mat, temp_mat);
-            kernel_id++;
-        }
-        relu(temp_mat, out_mat);
-    }
-    free(temp_mat.ptr);
-}

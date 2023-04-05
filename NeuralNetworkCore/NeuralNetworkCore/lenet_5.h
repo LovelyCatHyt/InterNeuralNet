@@ -48,6 +48,5 @@ public:
     mat_float f2_bias;
     mat_float f3;
     mat_float f3_bias;
-private:
-    void batch_conv_layer(const mat_float* img_arr, const mat_float* kernel_arr, const mat_float& bias, int in, int out, const mat_float* dst_array, int padding);
+private:    
 };
