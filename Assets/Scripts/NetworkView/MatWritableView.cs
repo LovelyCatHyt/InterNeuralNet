@@ -11,14 +11,14 @@ namespace InterNeuralNet.NetworkView
 
         public MatWritableView(int width, int height) : this(width, height, 1) { }
 
-        public void WriteTo(int matIndex, int row, int col, float value)
+        public void WriteAt(int matIndex, int row, int col, float value)
         {
             // TODO
         }
 
-        public void WriteTo(int row, int col, float value)
+        public void WriteAt(int row, int col, float value)
         {
-            WriteTo(0, row, col, value);
+            WriteAt(0, row, col, value);
         }
 
         public void BindTo(Layer layer)

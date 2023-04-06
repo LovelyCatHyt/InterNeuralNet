@@ -130,7 +130,7 @@ namespace fts
                             var pluginPath = _path + pluginName + EXT;
                             pluginHandle = SystemLibrary.LoadLibrary(pluginPath);
                             if (pluginHandle == IntPtr.Zero)
-                                throw new System.Exception("Failed to load plugin [" + pluginPath + "]");
+                                throw new System.Exception("Failed to load plugin [" + pluginPath + "] at " + pluginPath);
 
                             _loadedPlugins.Add(pluginName, pluginHandle);
                         }

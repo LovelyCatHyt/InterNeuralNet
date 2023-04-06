@@ -19,7 +19,7 @@ namespace InterNeuralNet.CoreWrapper
 
         public override void Eval(Mat_Float[] input, Mat_Float[] output)
         {
-            MatrixFunc.FullConnection(input[0], weight, bias, output[0]);
+            MatrixFunc.FullConnection(ref input[0], ref weight, ref bias, ref output[0]);
         }
 
         public override Mat_Shape[] GetParamShapes()

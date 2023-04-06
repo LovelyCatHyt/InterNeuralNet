@@ -42,7 +42,7 @@ namespace InterNeuralNet.NetworkView
         {
             MatView cntView = _inputView = new MatWritableView(inputWidth, inputHeight);
             var cntLayer = _startLayer;
-            // 除了输入之外的全部 Writable
+            // 除了输入之外的全部 WritableView
             var writableList = new List<MatWritableView>();
             // 所有输出 View
             var outputList = new List<MatView>();
@@ -55,5 +55,6 @@ namespace InterNeuralNet.NetworkView
             _paramViews = writableList.ToArray();
             _outputViews = outputList.ToArray();
         }
+
     }
 }

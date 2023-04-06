@@ -25,13 +25,13 @@ namespace InterNeuralNet.CoreWrapper
             var maxChannel = Math.Min(inChannel, outChannel);
             for (int i = 0; i < maxChannel; i++)
             {
-                MatrixFunc.MaxPooling(input[i], output[i], size);
+                MatrixFunc.MaxPooling(ref input[i], ref output[i], size);
             }
         }
 
         public override Mat_Shape[] GetParamShapes()
         {
-            return new[] { new Mat_Shape(0, 0, 1) };
+            return new Mat_Shape[0];
         }
     }
 }
