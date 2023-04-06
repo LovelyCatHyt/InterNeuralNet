@@ -19,6 +19,7 @@ namespace InterNeuralNet.NetworkView
         {
             Shape = shape;
             textures = new Texture2D[shape.count];
+            Mats = new Mat_Float[shape.count];
             // 创建纹理, 指针直接赋给Mat
             for (int i = 0; i < Shape.count; i++)
             {
@@ -26,6 +27,8 @@ namespace InterNeuralNet.NetworkView
                 Texture2D tex = new Texture2D(shape.width, shape.height, UnityEngine.Experimental.Rendering.GraphicsFormat.R32_SFloat, UnityEngine.Experimental.Rendering.TextureCreationFlags.None);
                 tex.filterMode = FilterMode.Point;
                 textures[i] = tex;
+                Mats[i].width = shape.width;
+                Mats[i].height = shape.height;
             }
             // SetMatPtr();
         }
@@ -72,6 +75,8 @@ namespace InterNeuralNet.NetworkView
         {
             return ReadAt(0, row, col);
         }
+
+        public override string ToString() => Shape.ToString();
 
         ~MatView()
         {

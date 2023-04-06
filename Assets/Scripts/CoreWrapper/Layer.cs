@@ -23,6 +23,8 @@ namespace InterNeuralNet.CoreWrapper
             this.height = height;
             this.count = count;
         }
+
+        public override string ToString() => $"w:{width}, h:{height}, c:{count}";
     }
 
     public abstract class Layer
