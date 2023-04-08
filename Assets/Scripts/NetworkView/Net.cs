@@ -14,8 +14,9 @@ namespace InterNeuralNet.NetworkView
         private MatWritableView _inputView;
         /// <summary>
         /// 所有可编辑参数的矩阵视图
+        /// 由于参数可能为单个标量, 也可能有多个矩阵, 因此这里是个二维数组
         /// </summary>
-        private MatWritableView[] _paramViews;
+        private MatWritableView[][] _paramViews;
         /// <summary>
         /// 所有过程输出的矩阵视图
         /// </summary>
@@ -57,6 +58,9 @@ namespace InterNeuralNet.NetworkView
         }
 
         public Layer GetLayer(string name) => _layerDict[name];
+        // TODO: 增加用下标的访问器
+
+        public MatWritableView[] GetLayerParameters(int id) => _paramViews[id];
 
         /// <summary>
         /// 构建网络视图
@@ -66,19 +70,30 @@ namespace InterNeuralNet.NetworkView
             MatView cntOutputView = _inputView = new MatWritableView(inputWidth, inputHeight);
             var cntLayer = _startLayer;
             // 除了输入之外的全部 WritableView
-            var writableList = new List<MatWritableView>();
+            var writableList = new List<MatWritableView[]>();
             // 所有输出 View
             var outputList = new List<MatView>();
+            // 遍历每一层
             while (cntLayer != null)
             {
-                writableList.AddRange(cntLayer.GetParamShapes().Select(s => new MatWritableView(s)));
+                writableList.Add(cntLayer.GetParamShapes().Select(s => new MatWritableView(s)).ToArray());
                 cntOutputView = new MatView(cntLayer.CalcOutputShape(cntOutputView.Shape));
                 outputList.Add(cntOutputView);
                 cntLayer = cntLayer.next;
             }
+            // 记录生成的各类视图
             _paramViews = writableList.ToArray();
             OutputViews = outputList.ToArray();
-            _views = writableList.Prepend(_inputView).Concat(OutputViews).ToArray();
+            // 所有视图的合集
+            var tempList = new List<MatView>();
+            tempList.Add(_inputView);
+            foreach (var views in writableList)
+            {
+                tempList.AddRange(views);
+            }
+            tempList.AddRange(OutputViews);
+            _views = tempList.ToArray();
+            // 最后输出构建结果
             Debug.Log($"Build finished. Tocal MatView count: {_views.Length}, Mats: {string.Join("\n", (IEnumerable<MatView>)_views)}");
         }
 
@@ -99,11 +114,18 @@ namespace InterNeuralNet.NetworkView
             var cntLayer = _startLayer;
             _startLayer.input = OutputViews[0].Mats;
             _startLayer.inChannel = OutputViews[0].Mats.Length;
-            for (int i = 0; ; i++)
+            for (int layerId = 0; ; layerId++)
             {
-                var mats = OutputViews[i].Mats;
+                var mats = OutputViews[layerId].Mats;
                 cntLayer.output = mats;
                 cntLayer.outChannel = mats.Length;
+                // 更新参数
+                var _params = new List<Mat_Float>();
+                foreach (var view in _paramViews[layerId])
+                {
+                    _params.AddRange(view.Mats);
+                }
+                cntLayer.ApplyParams(_params.ToArray());
                 if (cntLayer.next == null) break;
                 cntLayer.next.input = mats;
                 cntLayer.next.inChannel = mats.Length;
@@ -111,6 +133,7 @@ namespace InterNeuralNet.NetworkView
                 cntLayer = cntLayer.next;
             }
 
+            // 执行运算
             _startLayer.Eval();
 
             foreach (var view in _views)

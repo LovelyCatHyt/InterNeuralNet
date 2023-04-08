@@ -13,7 +13,7 @@ namespace InterNeuralNet.NetworkView
 
         public void WriteAt(int matIndex, int row, int col, float value)
         {
-            // TODO
+            textures[matIndex].SetPixel(col, row, new Color(value, 0, 0));
         }
 
         public void WriteAt(int row, int col, float value)

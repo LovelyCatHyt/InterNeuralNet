@@ -77,7 +77,7 @@ namespace InterNeuralNet.CoreWrapper
 
         [PluginFunctionAttr("batch_conv_layer")]
         public static BatchConvolutionLayerDelegate BatchConvolutionLayer = null;
-        public delegate void BatchConvolutionLayerDelegate(Mat_Float[] imgArray, Mat_Float[] kernels, Mat_Float bias, int inChannel, int outChannel, Mat_Float[] dst, int padding);
+        public delegate void BatchConvolutionLayerDelegate(Mat_Float[] imgArray, Mat_Float[] kernels, ref Mat_Float bias, int inChannel, int outChannel, Mat_Float[] dst, int padding);
 
         [PluginFunctionAttr("full_connect_layer")]
         public static FullConnectionDelegate FullConnection = null;
@@ -93,28 +93,28 @@ namespace InterNeuralNet.CoreWrapper
 #else
         // 必须重启Unity才能重载
         [DllImport(DllName, EntryPoint = "add")]
-        public static extern void Add(Mat_Float a, Mat_Float b, Mat_Float dst);
+        public static extern void Add(ref Mat_Float a, ref Mat_Float b, ref Mat_Float dst);
 
         [DllImport(DllName, EntryPoint ="add_scalar")]
-        public static extern void AddScalar(Mat_Float a, float scalar, Mat_Float dst);
+        public static extern void AddScalar(ref Mat_Float a, float scalar, ref Mat_Float dst);
 
         [DllImport(DllName, EntryPoint ="fill")]
-        public static extern void Fill(Mat_Float dst, float value);
+        public static extern void Fill(ref Mat_Float dst, float value);
 
         [DllImport(DllName, EntryPoint = "multiply")]
-        public static extern void Multiply(Mat_Float a, Mat_Float b, Mat_Float dst);
+        public static extern void Multiply(ref Mat_Float a, ref Mat_Float b, ref Mat_Float dst);
 
         [DllImport(DllName, EntryPoint = "multiply_scalar")]
-        public static extern void MultiplyScalar(Mat_Float a, float scalar, Mat_Float dst);
+        public static extern void MultiplyScalar(ref Mat_Float a, float scalar, ref Mat_Float dst);
 
         [DllImport(DllName, EntryPoint = "pooling_max")]
-        public static extern void MaxPooling(Mat_Float src, Mat_Float dst, int size);
+        public static extern void MaxPooling(ref Mat_Float src, ref Mat_Float dst, int size);
 
         [DllImport(DllName, EntryPoint = "conv_layer")]
-        public static extern void Convolution(Mat_Float _in, Mat_Float kernel, float bias, Mat_Float _out, int padding);
+        public static extern void Convolution(ref Mat_Float _in, ref Mat_Float kernel, float bias, ref Mat_Float _out, int padding);
 
         [DllImport(DllName, EntryPoint = "batch_conv_layer")]
-        public static extern void BatchConvolutionLayer(Mat_Float[] imgArray, Mat_Float[] kernels, Mat_Float bias, int inChannel, int outChannel, Mat_Float[] dst, int padding);
+        public static extern void BatchConvolutionLayer(Mat_Float[] imgArray, Mat_Float[] kernels, ref Mat_Float bias, int inChannel, int outChannel, Mat_Float[] dst, int padding);
 
         /// <summary>
         /// 含偏置量的全连接层
@@ -125,9 +125,8 @@ namespace InterNeuralNet.CoreWrapper
         /// <param name="_out">输出: nx1矩阵</param>
         /// <returns></returns>
         [DllImport(DllName, EntryPoint = "full_connect_layer")]
-        public static extern void FullConnection(Mat_Float _in, Mat_Float weght, Mat_Float bias, Mat_Float _out);
+        public static extern void FullConnection(ref Mat_Float _in, ref Mat_Float weght, ref Mat_Float bias, ref Mat_Float _out);
 #endif
-
 
     }
 }

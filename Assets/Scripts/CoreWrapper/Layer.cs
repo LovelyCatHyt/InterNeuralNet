@@ -61,6 +61,13 @@ namespace InterNeuralNet.CoreWrapper
             return next;
         }
 
+        public virtual void ApplyParams(Mat_Float[] parameters)
+        {
+            // 懒得写无参数的代码 所以在基类写 virtual
+            // 但是如果有参数 那就必须继承 所以直接抛异常
+            if (parameters.Length > 0) throw new NotImplementedException();
+        }
+
         /// <summary>
         /// 获取这一运算层的所有参数的 shape
         /// </summary>

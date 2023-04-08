@@ -370,21 +370,21 @@ void conv_layer(const mat_float& in, const mat_float& kernel, float bias, const 
 
 void batch_conv_layer(const mat_float* img_arr, const mat_float* kernel_arr, const mat_float& bias, int in, int out, const mat_float* dst_array, int padding)
 {
-	size_t kernel_id = 0;
-	mat_float temp_mat = create_mat_float(dst_array[0].width, dst_array[0].height);
-	for (size_t i_out = 0; i_out < out; i_out++)
-	{
-		auto out_mat = dst_array[i_out];
-		fill(temp_mat, bias.ptr[i_out]);
-		for (size_t i_in = 0; i_in < in; i_in++)
-		{
-			convolution(img_arr[i_in], out_mat, kernel_arr[kernel_id], padding);
-			add(out_mat, temp_mat, temp_mat);
-			kernel_id++;
-		}
-		relu(temp_mat, out_mat);
-	}
-	free(temp_mat.ptr);
+    size_t kernel_id = 0;
+    mat_float temp_mat = create_mat_float(dst_array[0].width, dst_array[0].height);
+    for (size_t i_out = 0; i_out < out; i_out++)
+    {
+        auto out_mat = dst_array[i_out];
+        fill(temp_mat, bias.ptr[i_out]);
+        for (size_t i_in = 0; i_in < in; i_in++)
+        {
+            convolution(img_arr[i_in], out_mat, kernel_arr[kernel_id], padding);
+            add(out_mat, temp_mat, temp_mat);
+            kernel_id++;
+        }
+        relu(temp_mat, out_mat);
+    }
+    free(temp_mat.ptr);
 }
 
 
