@@ -11,21 +11,21 @@ namespace InterNeuralNet.NetworkView
         /// <summary>
         /// 输入视图
         /// </summary>
-        private MatWritableView _inputView;
+        public MatWritableView InputView { get; private set; }
+        /// <summary>
+        /// 所有过程输出的矩阵视图
+        /// </summary>
+        public MatView[] OutputViews { get; private set; }
+
+        /// <summary>
+        /// 所有视图
+        /// </summary>
+        private MatView[] _views;
         /// <summary>
         /// 所有可编辑参数的矩阵视图
         /// 由于参数可能为单个标量, 也可能有多个矩阵, 因此这里是个二维数组
         /// </summary>
         private MatWritableView[][] _paramViews;
-        /// <summary>
-        /// 所有过程输出的矩阵视图
-        /// </summary>
-        public MatView[] OutputViews { get; private set; }
-        /// <summary>
-        /// 所有视图
-        /// </summary>
-        private MatView[] _views;
-
         private Layer _startLayer = null;
         private Layer _endLayer = null;
         private Dictionary<string, Layer> _layerDict;
@@ -63,11 +63,26 @@ namespace InterNeuralNet.NetworkView
         public MatWritableView[] GetLayerParameters(int id) => _paramViews[id];
 
         /// <summary>
+        /// 使用一张现有的纹理作为初始值构建网络视图
+        /// <para>构建时复制纹理数据 不会修改原纹理</para>
+        /// </summary>
+        /// <param name="initialInput"></param>
+        public void BuildNetworkView(Texture2D initialInput)
+        {
+            BuildNetworkViewInternal(new MatWritableView(initialInput));
+        }
+
+        /// <summary>
         /// 构建网络视图
         /// </summary>
         public void BuildNetworkView(int inputWidth, int inputHeight)
         {
-            MatView cntOutputView = _inputView = new MatWritableView(inputWidth, inputHeight);
+            BuildNetworkViewInternal(new MatWritableView(inputWidth, inputHeight));
+        }
+
+        private void BuildNetworkViewInternal(MatWritableView input)
+        {
+            MatView cntOutputView = InputView = input;
             var cntLayer = _startLayer;
             // 除了输入之外的全部 WritableView
             var writableList = new List<MatWritableView[]>();
@@ -86,7 +101,7 @@ namespace InterNeuralNet.NetworkView
             OutputViews = outputList.ToArray();
             // 所有视图的合集
             var tempList = new List<MatView>();
-            tempList.Add(_inputView);
+            tempList.Add(InputView);
             foreach (var views in writableList)
             {
                 tempList.AddRange(views);
@@ -112,8 +127,8 @@ namespace InterNeuralNet.NetworkView
 
             // 遍历每一层 指定好输入输出的频道数和矩阵
             var cntLayer = _startLayer;
-            _startLayer.input = OutputViews[0].Mats;
-            _startLayer.inChannel = OutputViews[0].Mats.Length;
+            _startLayer.input = InputView.Mats;
+            _startLayer.inChannel = InputView.Mats.Length;
             for (int layerId = 0; ; layerId++)
             {
                 var mats = OutputViews[layerId].Mats;
