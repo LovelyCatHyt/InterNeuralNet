@@ -15,4 +15,4 @@ cpp 模块依赖了 opencv 进行矩阵运算. 如果是 **Visual Studio** 用�
 Unity 模块已包含一个可运行时自动链接非托管库的脚本 (但后续可能会移除), 只需将新编译的 NeuralNetworkCore 二进制文件复制到 `Assets/Plugins` 下即可在 Unity 中使用.
 
 ## License
-未定. 有 star 再考虑.
+See [MIT License](./LICENSE)
