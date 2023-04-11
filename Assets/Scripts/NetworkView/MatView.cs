@@ -13,7 +13,14 @@ namespace InterNeuralNet.NetworkView
         public Texture2D[] textures;
         public Mat_Float[] Mats { get; protected set; }
         public Mat_Float Mat => Mats[0];
-        // public int MatCount { get; protected set; }
+        /// <summary>
+        /// 是否存在未更新的数据
+        /// </summary>
+        public bool IsDirty { get; protected set; } = false;
+        /// <summary>
+        /// 当前矩阵中的指针是否可用
+        /// </summary>
+        public bool IsPtrAvailable { get; protected set; } = false;
 
         public MatView(Mat_Shape shape)
         {
@@ -40,17 +47,22 @@ namespace InterNeuralNet.NetworkView
         /// <summary>
         /// 指示 <see cref="MatView"/> 开始写入纹理数据. 该方法调用后可以访问 <see cref="Mats"/> 中的数据.
         /// </summary>
-        public void WriteBegin()
+        public void EnableAccess()
         {
-            SetMatPtr();
+            if (!IsPtrAvailable) SetMatPtr();
+            IsDirty = true;
+            IsPtrAvailable = true;
         }
 
         /// <summary>
         /// 指示 <see cref="MatView"/> 数据已写入完成, 可以渲染. 该方法调用后, <see cref="Mats"/> 中的指针可能失效.
+        /// <para>多次连续调用仅触发一次纹理更新.</para>
         /// </summary>
-        public void WriteEnd()
+        public void UpdateTexture()
         {
-            Apply();
+            if (IsDirty) Apply();
+            IsDirty = false;
+            IsPtrAvailable = false;
         }
 
         /// <summary>

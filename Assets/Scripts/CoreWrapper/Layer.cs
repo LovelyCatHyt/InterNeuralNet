@@ -29,6 +29,8 @@ namespace InterNeuralNet.CoreWrapper
 
     public abstract class Layer
     {
+        public string name;    
+
         public Layer prev;
         public Layer next;
 

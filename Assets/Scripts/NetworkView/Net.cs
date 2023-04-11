@@ -26,12 +26,15 @@ namespace InterNeuralNet.NetworkView
         /// 由于参数可能为单个标量, 也可能有多个矩阵, 因此这里是个二维数组
         /// </summary>
         private MatWritableView[][] _paramViews;
+        private Dictionary<string, MatWritableView[]> _paramViewsDict;
         private Layer _startLayer = null;
         private Layer _endLayer = null;
+        private List<Layer> _layers;
         private Dictionary<string, Layer> _layerDict;
 
         public Net()
         {
+            _layers = new List<Layer>();
             _layerDict = new Dictionary<string, Layer>();
         }
 
@@ -47,7 +50,9 @@ namespace InterNeuralNet.NetworkView
             {
                 Debug.LogWarning($"Layer \"{name}\" has been added. Layer getter will return last layer named \"{name}\".");
             }
+            layer.name = name;
             _layerDict[name] = layer;
+            _layers.Add(layer);
             if (_startLayer == null)
             {
                 _startLayer = _endLayer = layer;
@@ -58,9 +63,11 @@ namespace InterNeuralNet.NetworkView
         }
 
         public Layer GetLayer(string name) => _layerDict[name];
-        // TODO: 增加用下标的访问器
+        public Layer GetLayer(int id) => _layers[id];
 
-        public MatWritableView[] GetLayerParameters(int id) => _paramViews[id];
+        public MatWritableView[] GetLayerParams(int id) => _paramViews[id];
+
+        public MatWritableView[] GetLayerParams(string name) => _paramViewsDict[name];
 
         /// <summary>
         /// 使用一张现有的纹理作为初始值构建网络视图
@@ -86,14 +93,21 @@ namespace InterNeuralNet.NetworkView
             var cntLayer = _startLayer;
             // 除了输入之外的全部 WritableView
             var writableList = new List<MatWritableView[]>();
+            // 所有网络层的参数表
+            _paramViewsDict = new Dictionary<string, MatWritableView[]>();
             // 所有输出 View
             var outputList = new List<MatView>();
             // 遍历每一层
             while (cntLayer != null)
             {
-                writableList.Add(cntLayer.GetParamShapes().Select(s => new MatWritableView(s)).ToArray());
+                // 参数
+                MatWritableView[] @params = cntLayer.GetParamShapes().Select(s => new MatWritableView(s)).ToArray();
+                writableList.Add(@params);
+                _paramViewsDict[cntLayer.name] = @params;
+                // 输出过程量
                 cntOutputView = new MatView(cntLayer.CalcOutputShape(cntOutputView.Shape));
                 outputList.Add(cntOutputView);
+                // 转移到下一层
                 cntLayer = cntLayer.next;
             }
             // 记录生成的各类视图
@@ -122,7 +136,7 @@ namespace InterNeuralNet.NetworkView
 
             foreach (var view in _views)
             {
-                view.WriteBegin();
+                view.EnableAccess();
             }
 
             // 遍历每一层 指定好输入输出的频道数和矩阵
@@ -153,7 +167,7 @@ namespace InterNeuralNet.NetworkView
 
             foreach (var view in _views)
             {
-                view.WriteEnd();
+                view.UpdateTexture();
             }
 
         }

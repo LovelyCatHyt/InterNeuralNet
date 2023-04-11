@@ -1,22 +1,20 @@
 using InterNeuralNet.CoreWrapper;
 using InterNeuralNet.NetworkView;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Tester : MonoBehaviour
 {
-    public SpriteRenderer input;
-    public SpriteRenderer kernelSprite;
-    public SpriteRenderer r1;
-    public SpriteRenderer r2;
-    public SpriteRenderer r3;
-
-    public SpriteCreator creator = new SpriteCreator();
+    public MatViewGO input;
+    public MatViewGO mulOutput;
+    public MatViewGO addOutput;
+    public MatViewGO convWeight;
+    public MatViewGO convOutput;
 
     public Texture2D intialInputTexture;
 
-    [Range(0, 1)] public float fill;
     public float multiply;
     public float add;
 
@@ -44,11 +42,11 @@ public class Tester : MonoBehaviour
         _testNet.BuildNetworkView(intialInputTexture);
 
         // 写入卷积核
-        var convViews = _testNet.GetLayerParameters(2);
+        var convViews = _testNet.GetLayerParams("Conv");
         var weightView = convViews[0];
         var biasView = convViews[1];
-        weightView.WriteBegin();
-        biasView.WriteBegin();
+        weightView.EnableAccess();
+        biasView.EnableAccess();
         for (int row = 0; row < 3; row++)
         {
             for (int col = 0; col < 3; col++)
@@ -57,15 +55,20 @@ public class Tester : MonoBehaviour
             }
         }
         biasView.WriteAt(0, 0, 0);
-        weightView.WriteEnd();
-        biasView.WriteEnd();
+        weightView.UpdateTexture();
+        biasView.UpdateTexture();
 
-        // 创建 Sprite
-        input.sprite = creator.Create(_testNet.InputView.textures[0]);
-        kernelSprite.sprite = creator.Create(weightView.textures[0]);
-        r1.sprite = creator.Create(_testNet.OutputViews[0].textures[0], "Output[0]");
-        r2.sprite = creator.Create(_testNet.OutputViews[1].textures[0], "Output[1]");
-        r3.sprite = creator.Create(_testNet.OutputViews[2].textures[0], "Output[2]");
+        // 连接视图
+        SetViews();
+    }
+
+    private void SetViews()
+    {
+        input.view = _testNet.InputView;
+        mulOutput.view = _testNet.OutputViews[0];
+        addOutput.view = _testNet.OutputViews[1];
+        convWeight.view = _testNet.GetLayerParams("Conv")[0];
+        convOutput.view = _testNet.OutputViews[2];
     }
 
     // Update is called once per frame
