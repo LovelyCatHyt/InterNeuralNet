@@ -18,7 +18,7 @@ namespace InterNeuralNet.NetworkView
         /// </summary>
         public event Action<int, Vector2> onMouseOver;
         /// <summary>
-        /// 鼠标点击事件
+        /// 鼠标左键点击事件
         /// <para>参数1: Mat ID</para>
         /// <para>参数2: 纹理归一化坐标</para>
         /// </summary>

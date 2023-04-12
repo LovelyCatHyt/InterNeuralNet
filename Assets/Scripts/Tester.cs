@@ -1,5 +1,6 @@
 using InterNeuralNet.CoreWrapper;
 using InterNeuralNet.NetworkView;
+using InterNeuralNet.UserEditTool;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -60,6 +61,11 @@ public class Tester : MonoBehaviour
 
         // 连接视图
         SetViews();
+    }
+
+    public void Start()
+    {
+        ToolBox.Inst.activate = ToolBox.Inst.GetComponent<ITool>();
     }
 
     private void SetViews()

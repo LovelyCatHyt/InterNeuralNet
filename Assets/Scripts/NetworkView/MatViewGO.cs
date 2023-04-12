@@ -1,3 +1,4 @@
+using InterNeuralNet.UserEditTool;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,17 +51,29 @@ namespace InterNeuralNet.NetworkView
                 MatViewEventTrigger t = r.GetComponent<MatViewEventTrigger>();
                 _triggers.Add(t);
                 t.onMouseClick += OnMouseClick;
+                t.onMouseOver += OnMouseOverSprite;
             }
             // 更新材质属性
             UpdateMaterialProp();
         }
 
+        private void OnMouseOverSprite(int id, Vector2 uv)
+        {
+            Vector2Int pixelPos = GetPixelPosition(id, uv);
+            if (Input.GetMouseButton(0)) ToolBox.Inst.OperateAt(view, id, pixelPos.x, pixelPos.y);
+        }
+
         private void OnMouseClick(int id, Vector2 uv)
         {
-            view.EnableAccess();
+            Vector2Int pixelPos = GetPixelPosition(id, uv);
+            // ToolBox.Inst.OperateAt(view, id, pixelPos.x, pixelPos.y);
+        }
+
+        private Vector2Int GetPixelPosition(int id, Vector2 uv)
+        {
             Texture2D tex = view.textures[id];
             var pixelPos = new Vector2Int((int)(uv.x * tex.width), (int)(uv.y * tex.height));
-            Debug.Log($"Mouse click at {pixelPos}, value: {tex.GetPixel(pixelPos.x, pixelPos.y).r}");
+            return pixelPos;
         }
 
         private void UpdateMaterialProp()
