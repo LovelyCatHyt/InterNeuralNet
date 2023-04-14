@@ -1,7 +1,8 @@
 using InterNeuralNet.CoreWrapper;
-using System.Linq;
-using System.Collections;
+using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using UnityEngine;
 
 namespace InterNeuralNet.NetworkView
@@ -170,6 +171,22 @@ namespace InterNeuralNet.NetworkView
                 view.UpdateTexture();
             }
 
+        }
+
+        public void LoadFromFile(FileStream fileStream)
+        {
+            foreach (var @params in _paramViews)
+            {
+                foreach (var view in @params)
+                {
+                    view.EnableAccess();
+                    foreach (var mat in view.Mats)
+                    {
+                        mat.ReadFromFile(fileStream);
+                    }
+                }
+            }
+            Debug.Assert(fileStream.Length == fileStream.Position, $"file pos = {fileStream.Position}, expected {fileStream.Length}");
         }
     }
 }

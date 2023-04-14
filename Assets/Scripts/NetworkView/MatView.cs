@@ -30,7 +30,6 @@ namespace InterNeuralNet.NetworkView
             // 创建纹理, 指针直接赋给Mat
             for (int i = 0; i < Shape.count; i++)
             {
-                // TODO: 这里很可能会出现: 无法读/无法写/无法渲染之类的问题 还需要深入研究
                 Texture2D tex = new Texture2D(shape.width, shape.height, UnityEngine.Experimental.Rendering.GraphicsFormat.R32_SFloat, UnityEngine.Experimental.Rendering.TextureCreationFlags.None);
                 tex.filterMode = FilterMode.Point;
                 textures[i] = tex;

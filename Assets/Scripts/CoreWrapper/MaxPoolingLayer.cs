@@ -17,12 +17,12 @@ namespace InterNeuralNet.CoreWrapper
 
         public override Mat_Shape CalcOutputShape(Mat_Shape shape)
         {
-            return new Mat_Shape(shape.width / size, shape.height / size, outChannel);
+            return new Mat_Shape(shape.width / size, shape.height / size, shape.count);
         }
 
         public override void Eval(Mat_Float[] input, Mat_Float[] output)
         {
-            var maxChannel = Math.Min(inChannel, outChannel);
+            var maxChannel = Math.Min(input.Length, output.Length);
             for (int i = 0; i < maxChannel; i++)
             {
                 MatrixFunc.MaxPooling(ref input[i], ref output[i], size);

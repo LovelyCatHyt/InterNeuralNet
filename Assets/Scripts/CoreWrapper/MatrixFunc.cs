@@ -1,5 +1,6 @@
 using fts;
 using System;
+using System.IO;
 using System.Runtime.InteropServices;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
@@ -34,6 +35,20 @@ namespace InterNeuralNet.CoreWrapper
             unsafe
             {
                 ptr = (IntPtr)array.GetUnsafeReadOnlyPtr();
+            }
+        }
+
+        public void ReadFromFile(FileStream f)
+        {
+            var len = width * height;
+            unsafe
+            {
+                Span<byte> buffer = stackalloc byte[4];
+                for (int i = 0; i < len; i++)
+                {
+                    f.Read(buffer);
+                    *(float*)(ptr + sizeof(float) * i) = BitConverter.ToSingle(buffer);
+                }
             }
         }
     }
@@ -90,6 +105,18 @@ namespace InterNeuralNet.CoreWrapper
         /// <param name="_out">输出: nx1矩阵</param>
         /// <returns></returns>
         public delegate void FullConnectionDelegate(ref Mat_Float _in, ref Mat_Float weght, ref Mat_Float bias, ref Mat_Float _out);
+
+        [PluginFunctionAttr("full_connect_layer_arr")]
+        public static FullConnectionArrDelegate FullConnectionArr = null;
+        /// <summary>
+        /// 含偏置量的全连接层, 但输入是数组
+        /// </summary>
+        /// <param name="_in">输入: 可以组成mx1大小的相同大小的矩阵数组</param>
+        /// <param name="weght">权重: nxm矩阵</param>
+        /// <param name="bias">偏置: nx1矩阵</param>
+        /// <param name="_out">输出: nx1矩阵</param>
+        /// <returns></returns>
+        public delegate void FullConnectionArrDelegate(Mat_Float[] inArr, ref Mat_Float weght, ref Mat_Float bias, ref Mat_Float _out);
 #else
         // 必须重启Unity才能重载
         [DllImport(DllName, EntryPoint = "add")]
@@ -126,6 +153,17 @@ namespace InterNeuralNet.CoreWrapper
         /// <returns></returns>
         [DllImport(DllName, EntryPoint = "full_connect_layer")]
         public static extern void FullConnection(ref Mat_Float _in, ref Mat_Float weght, ref Mat_Float bias, ref Mat_Float _out);
+        
+        /// <summary>
+        /// 含偏置量的全连接层, 但输入是数组
+        /// </summary>
+        /// <param name="_in">输入: 可以组成mx1大小的相同大小的矩阵数组</param>
+        /// <param name="weght">权重: nxm矩阵</param>
+        /// <param name="bias">偏置: nx1矩阵</param>
+        /// <param name="_out">输出: nx1矩阵</param>
+        /// <returns></returns>
+        [DllImport(DllName, EntryPoint = "full_connect_layer_arr")]
+        public static extern void FullConnectionArr(Mat_Float[] inArr, ref Mat_Float weght, ref Mat_Float bias, ref Mat_Float _out);
 #endif
 
     }

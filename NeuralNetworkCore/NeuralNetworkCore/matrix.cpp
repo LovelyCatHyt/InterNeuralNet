@@ -388,11 +388,29 @@ void batch_conv_layer(const mat_float* img_arr, const mat_float* kernel_arr, con
 }
 
 
-void full_connect_layer(const mat_float& in, const mat_float& weght, const mat_float& bias, const mat_float& out)
+void full_connect_layer(const mat_float& in, const mat_float& weight, const mat_float& bias, const mat_float& out)
 {
-    multiply(weght, in, out);
+    multiply(weight, in, out);
     add(out, bias, out);
     relu(out, out);
+}
+
+void full_connect_layer_arr(const mat_float* in_arr, const mat_float& weight, const mat_float& bias, const mat_float& out)
+{
+    // reshape到临时缓冲
+    auto step = in_arr->width * in_arr->height;
+    auto arr_len = weight.width / step;
+    auto temp = create_mat_float(1, weight.width);
+    auto temp_ptr = temp.ptr;
+    for (size_t i = 0; i < arr_len; i++)
+    {
+        memcpy(temp_ptr, in_arr[i].ptr, sizeof(float) * step);
+        temp_ptr += step;
+    }
+    // 用临时缓冲作为原版的输入
+    full_connect_layer(temp, weight, bias, out);
+    // 别忘了释放
+    free(temp.ptr);
 }
 
 void pooling(const mat_float& src, const mat_float& dst, int size, POOLING_TYPE pooling_type)

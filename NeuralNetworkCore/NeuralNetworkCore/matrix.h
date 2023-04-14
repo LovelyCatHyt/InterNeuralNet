@@ -87,11 +87,19 @@ extern "C" {
     /// 含偏置量的全连接层
     /// </summary>
     /// <param name="in">输入: mx1矩阵</param>
-    /// <param name="weght">权重: nxm矩阵</param>
+    /// <param name="weight">权重: nxm矩阵</param>
     /// <param name="bias">偏置: nx1矩阵</param>
     /// <param name="out">输出: nx1矩阵</param>
-    /// <returns></returns>
-    void API_DEF full_connect_layer(const mat_float& in, const mat_float& weght, const mat_float& bias, const mat_float& out);
+    void API_DEF full_connect_layer(const mat_float& in, const mat_float& weight, const mat_float& bias, const mat_float& out);
+
+    /// <summary>
+    /// 含偏置量的全连接层, 但输入为矩阵数组
+    /// </summary>
+    /// <param name="in">输入: mx1矩阵</param>
+    /// <param name="weight">权重: nxm矩阵</param>
+    /// <param name="bias">偏置: nx1矩阵</param>
+    /// <param name="out">输出: nx1矩阵</param>
+    void API_DEF full_connect_layer_arr(const mat_float* in_arr, const mat_float& weight, const mat_float& bias, const mat_float& out);
 
     enum POOLING_TYPE
     {
