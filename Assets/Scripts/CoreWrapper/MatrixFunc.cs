@@ -7,6 +7,7 @@ using Unity.Collections.LowLevel.Unsafe;
 
 namespace InterNeuralNet.CoreWrapper
 {
+
     [StructLayout(LayoutKind.Sequential, Pack = 4)]
     public struct Mat_Float
     {
@@ -51,6 +52,14 @@ namespace InterNeuralNet.CoreWrapper
                 }
             }
         }
+
+        public void Fill(float value) => MatrixFunc.Fill(ref this, value);
+
+        public float Min => MatrixFunc.Min(ref this);
+        public float Max => MatrixFunc.Max(ref this);
+
+        public int ArgMinInt() => MatrixFunc.ArgMin(ptr, width * height);
+        public int ArgMaxInt() => MatrixFunc.ArgMax(ptr, width * height);
     }
 
     /// <summary>
@@ -60,8 +69,32 @@ namespace InterNeuralNet.CoreWrapper
     public static class MatrixFunc
     {
         const string DllName = "NeuralNetworkCore";
+
+        public delegate void Logger(string message);
+
 #if DEBUG
         // 使用NativePluginLoader, 运行时自动重载, 而不需要重启 Unity
+
+        [PluginFunctionAttr("remove_logger")]
+        public static RemoveLoggerDelegate RemoveLogger = null;
+        public delegate void RemoveLoggerDelegate();
+
+        [PluginFunctionAttr("set_logger")]
+        public static SetLoggerDelegate SetLogger = null;
+        public delegate void SetLoggerDelegate(Logger logger);
+
+        [PluginFunctionAttr("arg_max")]
+        public static ArgMinMaxDelegate ArgMax = null;
+        [PluginFunctionAttr("arg_min")]
+        public static ArgMinMaxDelegate ArgMin = null;
+        public delegate int ArgMinMaxDelegate(IntPtr ptr, int length);
+
+        [PluginFunctionAttr("min_element")]
+        public static MinMaxDelegate Min = null;
+        [PluginFunctionAttr("max_element")]
+        public static MinMaxDelegate Max = null;
+        public delegate float MinMaxDelegate(ref Mat_Float mat);
+
         [PluginFunctionAttr("add")]
         public static AddDelegate Add = null;
         public delegate void AddDelegate(ref Mat_Float a, ref Mat_Float b, ref Mat_Float dst);
@@ -119,6 +152,17 @@ namespace InterNeuralNet.CoreWrapper
         public delegate void FullConnectionArrDelegate(Mat_Float[] inArr, ref Mat_Float weght, ref Mat_Float bias, ref Mat_Float _out);
 #else
         // 必须重启Unity才能重载
+
+        [DllImport(DllName, EntryPoint ="arg_max")]
+        public static extern int ArgMax(IntPtr ptr, int length);
+        [DllImport(DllName, EntryPoint = "arg_min")]
+        public static extern int ArgMin(IntPtr ptr, int length);
+
+        [DllImport(DllName, EntryPoint ="max_element")]
+        public static extern float Max(ref Mat_Float mat);
+        [DllImport(DllName, EntryPoint = "min_element")]
+        public static extern float Min(ref Mat_Float mat);
+
         [DllImport(DllName, EntryPoint = "add")]
         public static extern void Add(ref Mat_Float a, ref Mat_Float b, ref Mat_Float dst);
 

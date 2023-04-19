@@ -124,7 +124,7 @@ namespace InterNeuralNet.NetworkView
             tempList.AddRange(OutputViews);
             _views = tempList.ToArray();
             // 最后输出构建结果
-            Debug.Log($"Build finished. Tocal MatView count: {_views.Length}, Mats: {string.Join("\n", (IEnumerable<MatView>)_views)}");
+            Debug.Log($"Build finished. Total MatView count: {_views.Length}, Mats: {string.Join("\n", (IEnumerable<MatView>)_views)}");
         }
 
         public void Eval()
@@ -164,13 +164,15 @@ namespace InterNeuralNet.NetworkView
             }
 
             // 执行运算
-            _startLayer.Eval();
+            _startLayer.EvalToLast();
+        }
 
+        public void UpdateTextures()
+        {
             foreach (var view in _views)
             {
                 view.UpdateTexture();
             }
-
         }
 
         public void LoadFromFile(FileStream fileStream)

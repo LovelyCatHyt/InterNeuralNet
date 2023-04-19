@@ -13,7 +13,7 @@ namespace InterNeuralNet.UserEditTool
             var minY = Mathf.Max(0, y - radius);
             var maxX = Mathf.Min(view.Shape.width, x + radius);
             var maxY = Mathf.Min(view.Shape.height, y + radius);
-            var value = invertBehavior ? 1 : 0;
+            float value = invertBehavior ? 1 : 0;
             if (view is not MatWritableView wView) return;
             view.EnableAccess();
             for (int r = minY; r < maxY; r++)

@@ -34,12 +34,15 @@ namespace InterNeuralNet.NetworkView.NetworkDefine
             try
             {
                 var combined = Path.Combine(Application.dataPath, filePath);
-                FileStream file = new FileStream(Path.GetFullPath(combined), FileMode.Open);
-                // 跳过文件头
-                var buffer = new byte[sizeof(int)];
-                file.Read(buffer, 0, 4);
-                file.Seek(System.BitConverter.ToInt32(buffer), SeekOrigin.Current);
-                net.LoadFromFile(file);
+                using (FileStream file = new FileStream(Path.GetFullPath(combined), FileMode.Open))
+                {
+                    // 跳过文件头
+                    var buffer = new byte[sizeof(int)];
+                    file.Read(buffer, 0, 4);
+                    file.Seek(System.BitConverter.ToInt32(buffer), SeekOrigin.Current);
+                    net.LoadFromFile(file);
+                    file.Close();
+                }
             }
             catch (FileNotFoundException)
             {

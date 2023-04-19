@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: R2Cmap
-  m_Shader: {fileID: -6465566751694194690, guid: 8996f0ea909d14f40bc799436d79f455, type: 3}
+  m_Name: DebugMaterial
+  m_Shader: {fileID: -6465566751694194690, guid: a82834c5e54afcd4180bb832de42578a, type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
   m_LightmapFlags: 4
@@ -24,12 +24,8 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _Gradient:
-        m_Texture: {fileID: 2800000, guid: 2e411d96720b95149a43fccdd0b67dac, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 74bb328dd6ad09c4dab1fc5f2a507d87, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MaskTex:
@@ -56,8 +52,7 @@ Material:
     m_Floats:
     - _EnableExternalAlpha: 0
     m_Colors:
-    - _Color: {r: 0.75, g: 0.75, b: 0.75, a: 1}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _Flip: {r: 1, g: 1, b: 1, a: 1}
-    - _MinMax: {r: 0, g: 1, b: 0, a: 0}
     - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []

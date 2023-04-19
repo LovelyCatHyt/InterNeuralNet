@@ -19,6 +19,8 @@ namespace InterNeuralNet.NetworkView
     /// </summary>
     public class MatViewGO : MonoBehaviour
     {
+        public bool dynamicMinMax = false;
+
         public List<SpriteRenderer> renderers = new List<SpriteRenderer>();
         public List<ViewInfo> infos = new List<ViewInfo>();
         public MatView view;
@@ -37,7 +39,7 @@ namespace InterNeuralNet.NetworkView
             }
             if (renderers.Count < view.textures.Length)
             {
-                Debug.LogError("MatView's renderer count is less than matrix count!");
+                Debug.LogWarning("MatView's renderer count is less than matrix count!");
             }
             for (int i = 0; i < Mathf.Min(renderers.Count, view.textures.Length); i++)
             {
@@ -59,12 +61,14 @@ namespace InterNeuralNet.NetworkView
 
         private void OnMouseOverSprite(int id, Vector2 uv)
         {
+            if (id >= view.textures.Length) return;
             Vector2Int pixelPos = GetPixelPosition(id, uv);
             if (Input.GetMouseButton(0)) ToolBox.Inst.OperateAt(view, id, pixelPos.x, pixelPos.y);
         }
 
         private void OnMouseClick(int id, Vector2 uv)
         {
+            if (id >= view.textures.Length) return;
             Vector2Int pixelPos = GetPixelPosition(id, uv);
             // ToolBox.Inst.OperateAt(view, id, pixelPos.x, pixelPos.y);
         }
@@ -88,7 +92,23 @@ namespace InterNeuralNet.NetworkView
 
         private void Update()
         {
+            if (view == null) return;
+            if (dynamicMinMax && view.IsPtrAvailable)
+            {
+                UpdateMinMaxInfo();
+            }
+            view.UpdateTexture();
             UpdateMaterialProp();
+        } 
+
+        private void UpdateMinMaxInfo()
+        {
+            for (int i = 0; i < Mathf.Min(renderers.Count, view.Shape.count); i++)
+            {
+                var info = infos[i];
+                info.minMax = new Vector2(view.Mats[i].Min, view.Mats[i].Max);
+                infos[i] = info;
+            }
         }
 
 #if UNITY_EDITOR

@@ -32,7 +32,7 @@ class API_DEF lenet
 public:
     lenet();
     ~lenet();
-    void read_from_file(const char* path);
+    bool read_from_file(const char* path);
     // 等价于 this->eval(img)
     int operator()(const mat_float& img);
     // 这个函数仅仅是纯粹的 eval, 分配的内存空间会在函数返回前释放
@@ -48,5 +48,11 @@ public:
     mat_float f2_bias;
     mat_float f3;
     mat_float f3_bias;
-private:    
+private:
 };
+
+extern "C" {
+    API_DEF void* create_lenet_core(const char* path);
+    int API_DEF eval_core(void* lenet_ptr, const mat_float& img);
+    void API_DEF release_core(void* lenet_ptr);
+}

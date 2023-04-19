@@ -25,7 +25,7 @@ namespace InterNeuralNet.CoreWrapper
         public override Mat_Shape CalcOutputShape(Mat_Shape shape)
         {
             // 如果 padding 为0, 则输出会比输入小一圈, 写反了会内存越界
-            var delta = padding - (size / 2);
+            var delta = padding * 2 - (size / 2) * 2;
             return new Mat_Shape(shape.width + delta, shape.height + delta, outChannel);
         }
 
@@ -33,10 +33,16 @@ namespace InterNeuralNet.CoreWrapper
         {
             kernels = parameters.SkipLast(1).ToArray();
             bias = parameters.Last();
+            // UnityEngine.Debug.Log($"{name}: kernels[{kernels.Length}]: {kernels[0].height}*{kernels[0].width}, bias: {bias.height}*{bias.width}");
         }
 
         public override void Eval(Mat_Float[] input, Mat_Float[] output)
         {
+            //UnityEngine.Debug.Log($"ConvLayer \"{name}\":  Eval({input.Length} " +
+            //$"{input[0].height}x{input[0].width} in, " +
+            //$"{output.Length} {output[0].height}x{output[0].width} out, " +
+            //$"{kernels.Length} {kernels[0].height}x{kernels[1].width} kernels, 1x{bias.height} bias, " +
+            //$"{padding} pad)");
             MatrixFunc.BatchConvolutionLayer(input, kernels, ref bias, inChannel, outChannel, output, padding);
         }
 

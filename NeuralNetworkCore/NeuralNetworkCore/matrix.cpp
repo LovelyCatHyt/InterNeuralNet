@@ -42,6 +42,82 @@ mat_float create_mat_float(int width, int height)
     return res;
 }
 
+void log_msg_global(std::string msg)
+{
+    if (global_logger == 0) return;
+    (*global_logger)(msg.c_str());
+}
+
+void remove_logger()
+{
+    global_logger = 0;
+}
+
+void set_logger(logger fp)
+{
+    global_logger = fp;
+}
+
+int arg_max(const float* ptr, int length)
+{
+    if (length <= 0) return -1;
+    auto max = *ptr;
+    auto arg = 0;
+    for (size_t i = 0; i < length; i++)
+    {
+        if (*ptr > max)
+        {
+            max = *ptr;
+            arg = i;
+        }
+        ptr++;
+    }
+    return arg;
+}
+
+int arg_min(const float* ptr, int length)
+{
+    if (length <= 0) return -1;
+    auto min = *ptr;
+    auto arg = 0;
+    for (size_t i = 0; i < length; i++)
+    {
+        if (*ptr < min)
+        {
+            min = *ptr;
+            arg = i;
+        }
+        ptr++;
+    }
+    return arg;
+}
+
+float max_element(const mat_float& mat)
+{
+    auto len = mat.width * mat.height;
+    auto ptr = mat.ptr;
+    auto max = *ptr;
+    for (size_t i = 0; i < len; i++)
+    {
+        max = *ptr > max ? *ptr : max;
+        ptr++;
+    }
+    return max;
+}
+
+float min_element(const mat_float& mat)
+{
+    auto len = mat.width * mat.height;
+    auto ptr = mat.ptr;
+    auto min = *ptr;
+    for (size_t i = 0; i < len; i++)
+    {
+        min = *ptr < min ? *ptr : min;
+        ptr++;
+    }
+    return min;
+}
+
 void add(const mat_float& a, const mat_float& b, const mat_float& dst)
 {
     cv::hal::add32f
@@ -372,6 +448,8 @@ void batch_conv_layer(const mat_float* img_arr, const mat_float* kernel_arr, con
 {
     size_t kernel_id = 0;
     mat_float temp_mat = create_mat_float(dst_array[0].width, dst_array[0].height);
+    // std::string msg = "[Native] created a temp_mat, width: " + std::to_string(temp_mat.width) + ", height: " + std::to_string(temp_mat.height);
+    // log_msg_global(msg);
     for (size_t i_out = 0; i_out < out; i_out++)
     {
         auto out_mat = dst_array[i_out];
@@ -386,7 +464,6 @@ void batch_conv_layer(const mat_float* img_arr, const mat_float* kernel_arr, con
     }
     free(temp_mat.ptr);
 }
-
 
 void full_connect_layer(const mat_float& in, const mat_float& weight, const mat_float& bias, const mat_float& out)
 {

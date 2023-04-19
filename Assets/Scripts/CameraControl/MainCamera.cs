@@ -24,6 +24,10 @@ namespace InterNeuralNet.CameraControl
         {
             Vector3 mouseWorldPos = _cam.ScreenToWorldPoint(Input.mousePosition);
             // 中键拖拽
+            if (Input.GetMouseButtonDown(2))
+            {
+                _lastMouseWorldPos = _cam.ScreenToWorldPoint(Input.mousePosition);
+            }
             if (Input.GetMouseButton(2))
             {
                 _camTran.position -= mouseWorldPos - _lastMouseWorldPos;

@@ -11,7 +11,7 @@ namespace InterNeuralNet.CoreWrapper
         {
             this.inNode = inNode;
             this.outNode = outNode;
-            weight.width = inNode; ;
+            weight.width = inNode;
             bias.height = weight.height = outNode;
             bias.width = 1;
         }
@@ -29,6 +29,7 @@ namespace InterNeuralNet.CoreWrapper
         {
             weight = parameters[0];
             bias = parameters[1];
+            // UnityEngine.Debug.Log($"{name}: weight: {weight.height}*{weight.width}, bias: {bias.height}*{bias.width}");
         }
 
         public override Mat_Shape CalcOutputShape(Mat_Shape shape)

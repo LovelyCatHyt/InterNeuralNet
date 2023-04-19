@@ -47,12 +47,13 @@ namespace InterNeuralNet.CoreWrapper
 
         public abstract void Eval(Mat_Float[] input, Mat_Float[] output);
 
-        public void Eval()
+        public void EvalToLast()
         {
             Eval(input, output);
+            // UnityEngine.Debug.Log($"EvalToLast in channel: {input.Length}, out channel: {output.Length}");
             if (next != null)
             {
-                next.Eval();
+                next.EvalToLast();
             }
         }
 

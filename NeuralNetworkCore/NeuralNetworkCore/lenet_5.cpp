@@ -86,14 +86,14 @@ lenet::~lenet()
     free(f3_bias.ptr);
 }
 
-void lenet::read_from_file(const char* path)
+bool lenet::read_from_file(const char* path)
 {
     FILE* f;
     fopen_s(&f, path, "rb");
     if (f == NULL)
     {
         printf("cannot open file at: %s\n", path);
-        return;
+        return false;
     }
     // 跳过前面的信息描述
     int info_len;
@@ -116,6 +116,7 @@ void lenet::read_from_file(const char* path)
     fread(f3_bias.ptr, sizeof(float), f3_bias.width * f3_bias.height, f);
 
     fclose(f);
+    return true;
 }
 
 void bind_mat_arr(mat_float* arr, int width, int height, int count, float* cache)
@@ -255,7 +256,7 @@ void lenet::test(const char* test_file, const char* label_file, int max_test_cou
     auto element_count = row * col * img_count;
     std::unique_ptr<float> cache_smart{ new float[element_count] };
     std::unique_ptr<mat_float> imgs_smart{ new mat_float[img_count] };
-    
+
     // 注意输入的数据类型是uint8 所以还得手动转一下
     auto temp = new unsigned char[element_count];
     auto cache = cache_smart.get();
@@ -298,4 +299,26 @@ void lenet::test(const char* test_file, const char* label_file, int max_test_cou
     }
 
     printf("test result: acc = %f%%\n", correct * 100.0f / test_count);
+}
+
+void* create_lenet_core(const char* path)
+{
+    auto new_core = new lenet;
+    auto path_str = std::string(path);
+    log_msg_global("[Native] Loading data at \"" + path_str + "\".");
+    auto res = new_core->read_from_file(path);
+    if (res) log_msg_global("[Native] Loading finished.");
+    else log_msg_global("[Native] Loading failed.");
+    return reinterpret_cast<void*>(new_core);
+}
+
+int eval_core(void* lenet_ptr, const mat_float& img)
+{
+    auto _lenet = reinterpret_cast<lenet*>(lenet_ptr);
+    return _lenet->eval(img);
+}
+
+void release_core(void* lenet_ptr)
+{
+    delete reinterpret_cast<lenet*>(lenet_ptr);
 }

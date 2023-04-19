@@ -1,7 +1,6 @@
 using InterNeuralNet.NetworkView;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+
 namespace InterNeuralNet.UserEditTool
 {
     /// <summary>
@@ -10,6 +9,8 @@ namespace InterNeuralNet.UserEditTool
     public class ToolBox : MonoBehaviour
     {
         public static ToolBox Inst { get; private set; }
+
+        public MatWritableView focus;
 
         public ITool activate;
 
@@ -21,6 +22,21 @@ namespace InterNeuralNet.UserEditTool
                 return;
             }
             Inst = this;
+        }
+
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                if (focus != null)
+                {
+                    focus.EnableAccess();
+                    foreach (var mat in focus.Mats)
+                    {
+                        mat.Fill(0);
+                    }
+                }
+            }
         }
 
         public void OperateAt(MatView view, int matId, int x, int y)

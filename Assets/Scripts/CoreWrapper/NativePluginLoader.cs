@@ -43,6 +43,8 @@ namespace fts
     {
         // Constants
         const string EXT = ".dll"; // TODO: Handle different platforms
+        // Public fields
+        public event Action onBeforeUnloadPlugins;
 
         // Static fields
         static NativePluginLoader _singleton;
@@ -52,7 +54,7 @@ namespace fts
         string _path;
 
         // Static Properties
-        static NativePluginLoader singleton
+        public static NativePluginLoader singleton
         {
             get
             {
@@ -95,6 +97,7 @@ namespace fts
         // Free all loaded libraries
         void UnloadAll()
         {
+            onBeforeUnloadPlugins?.Invoke();
             foreach (var kvp in _loadedPlugins)
             {
                 bool result = SystemLibrary.FreeLibrary(kvp.Value);

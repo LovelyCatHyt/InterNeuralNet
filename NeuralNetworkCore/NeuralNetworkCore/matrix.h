@@ -1,5 +1,6 @@
 #pragma once
 #include "pch.h"
+#include <iostream>
 // 忽略: warning C4091: “typedef ”: 没有声明变量时忽略“mat_base”的左侧
 #pragma warning(push)
 #pragma warning(disable: 4091)
@@ -29,7 +30,23 @@ typedef struct mat_double
 #pragma pack(pop)
 
 #pragma warning(pop)
+
+typedef void(*logger)(const char* msg);
+
+static logger global_logger = 0;
+
+void log_msg_global(std::string msg);
+
 extern "C" {
+    void API_DEF remove_logger();
+    void API_DEF set_logger(logger fp);
+
+    int API_DEF arg_max(const float* ptr, int length);
+    int API_DEF arg_min(const float* ptr, int length);
+
+    float API_DEF max_element(const mat_float& mat);
+    float API_DEF min_element(const mat_float& mat);
+
     void API_DEF add(const mat_float& a, const mat_float& b, const mat_float& dst);
     void API_DEF add_scalar(const mat_float& a, float scalar, const mat_float& dst);
 
