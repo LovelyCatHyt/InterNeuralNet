@@ -1,3 +1,4 @@
+using InterNeuralNet.UI;
 using InterNeuralNet.UserEditTool;
 using System;
 using System.Collections.Generic;
@@ -19,6 +20,7 @@ namespace InterNeuralNet.NetworkView
     /// </summary>
     public class MatViewGO : MonoBehaviour
     {
+        public string label;
         public bool dynamicMinMax = false;
 
         public List<SpriteRenderer> renderers = new List<SpriteRenderer>();
@@ -28,22 +30,30 @@ namespace InterNeuralNet.NetworkView
         private int _minMaxPropId = Shader.PropertyToID("_MinMax");
         private int _colorMapPropId = Shader.PropertyToID("_Gradient");
         private List<MatViewEventTrigger> _triggers = new List<MatViewEventTrigger>();
+        private MatViewFrame _frame;
 
         private void Start()
         {
-            if (renderers == null)
+            if (renderers == null || renderers.Count == 0)
             {
-                Debug.LogError("MatView doesn't have any renderers!");
+                Debug.LogError($"\"{name}\" doesn't have any renderers!", this);
                 renderers = new List<SpriteRenderer>();
                 return;
             }
             if (renderers.Count < view.textures.Length)
             {
-                Debug.LogWarning("MatView's renderer count is less than matrix count!");
+                Debug.LogWarning($"\"{name}\"'s renderer count is less than matrix count!", this);
             }
             for (int i = 0; i < Mathf.Min(renderers.Count, view.textures.Length); i++)
             {
                 renderers[i].sprite = SpriteCreator.CreateFixedWidth(view.textures[i], $"{name}[{i}]");
+                var aspect = view.textures[i].height / view.textures[i].width;
+                // 设置对应的碰撞体尺寸 因为上面的Sprite创建只能保证宽度相同, 碰撞体初始形态仍然为正方形
+                var collider = renderers[i].GetComponent<BoxCollider2D>();
+                if (collider)
+                {
+                    collider.size = new Vector2(1, aspect);
+                }
                 renderers[i].material = new Material(renderers[i].sharedMaterial);
             }
             // 记录 triggers 并监听事件
@@ -57,12 +67,16 @@ namespace InterNeuralNet.NetworkView
             }
             // 更新材质属性
             UpdateMaterialProp();
+            // 创建外框UI
+            _frame = UIManager.Inst.CreateMatViewFrame();
+            _frame.SetContent(label, view.Shape.height, view.Shape.width, view.Shape.count);
         }
 
         private void OnMouseOverSprite(int id, Vector2 uv)
         {
             if (id >= view.textures.Length) return;
             Vector2Int pixelPos = GetPixelPosition(id, uv);
+            UIManager.Inst.statsUI.SetStats($"{name}({id})", pixelPos.y, pixelPos.x, view.ReadAt(id, pixelPos.y, pixelPos.x));
             if (Input.GetMouseButton(0)) ToolBox.Inst.OperateAt(view, id, pixelPos.x, pixelPos.y);
         }
 
@@ -80,6 +94,9 @@ namespace InterNeuralNet.NetworkView
             return pixelPos;
         }
 
+        /// <summary>
+        /// 更新材质属性
+        /// </summary>
         private void UpdateMaterialProp()
         {
             for (int i = 0; i < renderers.Count; i++)
@@ -99,7 +116,34 @@ namespace InterNeuralNet.NetworkView
             }
             view.UpdateTexture();
             UpdateMaterialProp();
-        } 
+            UpdateFrame();
+        }
+
+        /// <summary>
+        /// 更新视图框架
+        /// </summary>
+        private void UpdateFrame()
+        {
+            if (!_frame) return;
+            Vector3 min = new Vector3(float.MaxValue, float.MaxValue);
+            Vector3 max = new Vector3(float.MinValue, float.MinValue);
+            foreach (var r in renderers)
+            {
+                var extents = r.sprite.bounds.extents;
+                extents.z = 0;
+                var tran = r.transform;
+                var a = tran.TransformPoint(extents);
+                var b = tran.TransformPoint(-extents);
+                // 考虑到负数缩放 干脆a, b都一起比较
+                min = Vector3.Min(min, a);
+                min = Vector3.Min(min, b);
+                max = Vector3.Max(max, a);
+                max = Vector3.Max(max, b);
+            }
+            min = Camera.main.WorldToScreenPoint(min);
+            max = Camera.main.WorldToScreenPoint(max);
+            _frame.SetPosition(min, max);
+        }
 
         private void UpdateMinMaxInfo()
         {

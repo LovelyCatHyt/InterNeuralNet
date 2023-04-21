@@ -1,6 +1,7 @@
 using InterNeuralNet.CoreWrapper;
 using InterNeuralNet.NetworkView;
 using InterNeuralNet.NetworkView.NetworkDefine;
+using InterNeuralNet.UI;
 using InterNeuralNet.UserEditTool;
 using System.Linq;
 using UnityEngine;
@@ -71,7 +72,8 @@ public class Tester : MonoBehaviour
     public void Update()
     {
         lenet5.InputView.EnableAccess();
-        infoText.text = $"core result: {lenet5Core.Eval(lenet5.InputView.Mat)}";
+        // infoText.text = $"core result: {lenet5Core.Eval(lenet5.InputView.Mat)}";
         lenet5.Eval();
+        UIManager.Inst.statsUI.SetResult(finalOutput.view.Mat.ArgMaxInt());
     }
 }
