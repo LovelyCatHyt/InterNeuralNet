@@ -21,6 +21,7 @@ namespace InterNeuralNet.NetworkView
     public class MatViewGO : MonoBehaviour
     {
         public string label;
+        public int frameType = 0;
         public bool dynamicMinMax = false;
 
         public List<SpriteRenderer> renderers = new List<SpriteRenderer>();
@@ -40,6 +41,11 @@ namespace InterNeuralNet.NetworkView
                 renderers = new List<SpriteRenderer>();
                 return;
             }
+            if (view == null)
+            {
+                Debug.LogError($"\"{name}\" doesn't have a view binded!", this);
+                return;
+            }
             if (renderers.Count < view.textures.Length)
             {
                 Debug.LogWarning($"\"{name}\"'s renderer count is less than matrix count!", this);
@@ -47,7 +53,7 @@ namespace InterNeuralNet.NetworkView
             for (int i = 0; i < Mathf.Min(renderers.Count, view.textures.Length); i++)
             {
                 renderers[i].sprite = SpriteCreator.CreateFixedWidth(view.textures[i], $"{name}[{i}]");
-                var aspect = view.textures[i].height / view.textures[i].width;
+                var aspect = (float)view.textures[i].height / view.textures[i].width;
                 // 设置对应的碰撞体尺寸 因为上面的Sprite创建只能保证宽度相同, 碰撞体初始形态仍然为正方形
                 var collider = renderers[i].GetComponent<BoxCollider2D>();
                 if (collider)
@@ -68,7 +74,8 @@ namespace InterNeuralNet.NetworkView
             // 更新材质属性
             UpdateMaterialProp();
             // 创建外框UI
-            _frame = UIManager.Inst.CreateMatViewFrame();
+            _frame = UIManager.Inst.CreateMatViewFrame(frameType);
+            _frame.Init(this);
             _frame.SetContent(label, view.Shape.height, view.Shape.width, view.Shape.count);
         }
 

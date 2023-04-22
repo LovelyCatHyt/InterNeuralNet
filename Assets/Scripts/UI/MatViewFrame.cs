@@ -1,3 +1,4 @@
+using InterNeuralNet.NetworkView;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -12,7 +13,15 @@ namespace InterNeuralNet.UI
         public Text title;
         public Text size;
         public string sizeFormat = "尺寸: {0}x{1}, 数量: {2}";
-        public RawImage colorMapImg;
+        public MatViewGO viewGO;
+
+        private Vector3 initScale;
+
+        public void Init(MatViewGO viewGO)
+        {
+            this.viewGO = viewGO;
+            initScale = viewGO.transform.localScale;
+        }
 
         public void SetContent(string _title, int height, int width, int count)
         {
@@ -32,7 +41,18 @@ namespace InterNeuralNet.UI
             rectTran.sizeDelta = max - min;
         }
 
- 
+        public void HideOrShow()
+        {
+            if (viewGO.transform.localScale.sqrMagnitude > 0)
+            {
+                viewGO.transform.localScale = Vector3.zero;
+            }
+            else
+            {
+                viewGO.transform.localScale = initScale;
+            }
+
+        }
     }
 
 }

@@ -9,11 +9,11 @@ namespace InterNeuralNet.UI
 
         public StatsUI statsUI;
 
-        [SerializeField] private MatViewFrame _framePrefab;
+        [SerializeField] private MatViewFrame[] _framePrefabs;
 
-        public MatViewFrame CreateMatViewFrame()
+        public MatViewFrame CreateMatViewFrame(int type)
         {
-            var go = Instantiate(_framePrefab.gameObject, transform);
+            var go = Instantiate(_framePrefabs[type].gameObject, transform);
             return go.GetComponent<MatViewFrame>();
         }
 

@@ -55,9 +55,11 @@ Material:
     m_Ints: []
     m_Floats:
     - _EnableExternalAlpha: 0
+    - _GridStrength: 0
     m_Colors:
     - _Color: {r: 0.75, g: 0.75, b: 0.75, a: 1}
     - _Flip: {r: 1, g: 1, b: 1, a: 1}
+    - _GridColor: {r: 0.2830189, g: 0.2830189, b: 0.2830189, a: 0}
     - _MinMax: {r: 0, g: 1, b: 0, a: 0}
     - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
