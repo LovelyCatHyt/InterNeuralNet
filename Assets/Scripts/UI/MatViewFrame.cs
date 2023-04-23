@@ -10,10 +10,14 @@ namespace InterNeuralNet.UI
 {
     public class MatViewFrame : MonoBehaviour
     {
-        public Text title;
-        public Text size;
         public string sizeFormat = "尺寸: {0}x{1}, 数量: {2}";
+
+
         public MatViewGO viewGO;
+        public RawImage frameImg;
+        public GameObject frameGO;
+        public Color selectColor;
+        public Color unSelectColor;
 
         private Vector3 initScale;
 
@@ -21,12 +25,6 @@ namespace InterNeuralNet.UI
         {
             this.viewGO = viewGO;
             initScale = viewGO.transform.localScale;
-        }
-
-        public void SetContent(string _title, int height, int width, int count)
-        {
-            title.text = _title;
-            size.text = string.Format(sizeFormat, height, width, count);
         }
 
         /// <summary>
@@ -50,8 +48,22 @@ namespace InterNeuralNet.UI
             else
             {
                 viewGO.transform.localScale = initScale;
+                UIManager.Inst.SelectViewGO(viewGO);
             }
 
+        }
+
+        public void OnSelect()
+        {
+            // TODO: 更丰富的效果
+            frameGO.SetActive(true);
+            frameImg.color = selectColor;
+        }
+
+        public void OnDeselect()
+        {
+            if (viewGO.transform.localScale.sqrMagnitude > 0) frameGO.SetActive(false);
+            frameImg.color = unSelectColor;
         }
     }
 

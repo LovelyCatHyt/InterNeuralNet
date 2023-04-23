@@ -1,3 +1,6 @@
+using InterNeuralNet.NetworkView;
+using InterNeuralNet.UserEditTool;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,7 +10,9 @@ namespace InterNeuralNet.UI
     {
         public static UIManager Inst { get; private set; }
 
+        public MatViewGO SelectedViewGO { get; private set; }
         public StatsUI statsUI;
+        public MatViewInfo viewInfo;
 
         [SerializeField] private MatViewFrame[] _framePrefabs;
 
@@ -31,6 +36,26 @@ namespace InterNeuralNet.UI
                 statsUI = FindObjectOfType<StatsUI>();
             }
         }
+
+        public void SelectViewGO(MatViewGO matViewGO)
+        {
+            if (SelectedViewGO == matViewGO) return;
+            if (SelectedViewGO)
+            {
+                SelectedViewGO.OnDeselect();
+            }
+            SelectedViewGO = matViewGO;
+            var view = matViewGO.view;
+            if (view is MatWritableView writableView)
+            {
+                ToolBox.Inst.focus = writableView;
+            }
+            else
+            {
+                ToolBox.Inst.focus = null;
+            }
+            viewInfo.SetContent(matViewGO.label, view.Shape.height, view.Shape.width, view.Shape.count);
+        }   
     }
 
 }

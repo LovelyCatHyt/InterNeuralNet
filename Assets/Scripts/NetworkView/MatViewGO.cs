@@ -76,21 +76,30 @@ namespace InterNeuralNet.NetworkView
             // 创建外框UI
             _frame = UIManager.Inst.CreateMatViewFrame(frameType);
             _frame.Init(this);
-            _frame.SetContent(label, view.Shape.height, view.Shape.width, view.Shape.count);
+            _frame.OnDeselect();
+        }
+
+        public void OnDeselect()
+        {
+            _frame.OnDeselect();
         }
 
         private void OnMouseOverSprite(int id, Vector2 uv)
         {
             if (id >= view.textures.Length) return;
+            var toolBox = ToolBox.Inst;
+            if (toolBox.focus != view) return;
             Vector2Int pixelPos = GetPixelPosition(id, uv);
             UIManager.Inst.statsUI.SetStats($"{name}({id})", pixelPos.y, pixelPos.x, view.ReadAt(id, pixelPos.y, pixelPos.x));
-            if (Input.GetMouseButton(0)) ToolBox.Inst.OperateAt(view, id, pixelPos.x, pixelPos.y);
+            if (Input.GetMouseButton(0)) toolBox.OperateAt(view, id, pixelPos.x, pixelPos.y);
         }
 
         private void OnMouseClick(int id, Vector2 uv)
         {
             if (id >= view.textures.Length) return;
-            Vector2Int pixelPos = GetPixelPosition(id, uv);
+            _frame.OnSelect();
+            UIManager.Inst.SelectViewGO(this);
+            // Vector2Int pixelPos = GetPixelPosition(id, uv);
             // ToolBox.Inst.OperateAt(view, id, pixelPos.x, pixelPos.y);
         }
 

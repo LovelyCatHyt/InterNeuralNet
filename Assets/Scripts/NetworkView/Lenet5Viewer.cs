@@ -22,7 +22,9 @@ namespace InterNeuralNet.NetworkView
         public MatViewGO fc3Weight;
         public MatViewGO fc3Bias;
         public MatViewGO conv1Output;
+        public MatViewGO pa1Output;
         public MatViewGO conv2Output;
+        public MatViewGO pa2Output;
         public MatViewGO fc1Output;
         public MatViewGO fc2Output;
         public MatViewGO fc3Output;
@@ -84,7 +86,9 @@ namespace InterNeuralNet.NetworkView
 
 
             conv1Output.view = lenet5.OutputViews[0];
+            pa1Output.view = lenet5.OutputViews[1];
             conv2Output.view = lenet5.OutputViews[2];
+            pa2Output.view = lenet5.OutputViews[3];
             fc1Output.view = lenet5.OutputViews[4];
             fc2Output.view = lenet5.OutputViews[5];
             fc3Output.view = lenet5.OutputViews[6];

@@ -648,7 +648,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9da65b739a673e74b90f9353dfd207f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  title: {fileID: 7019727337928382136}
-  size: {fileID: 3628164333082365593}
   sizeFormat: "\u5C3A\u5BF8: {0}x{1}, \u6570\u91CF: {2}"
   viewGO: {fileID: 0}
+  frameImg: {fileID: 1123911118750694033}
+  frameGO: {fileID: 705889407813353578}
+  selectColor: {r: 0.4627451, g: 0.4627451, b: 0.4627451, a: 0.4627451}
+  unSelectColor: {r: 0.4627451, g: 0.4627451, b: 0.4627451, a: 0.4627451}
